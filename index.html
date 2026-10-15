@@ -1,0 +1,1080 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d2a5c">
+<meta name="color-scheme" content="light">
+<meta name="apple-mobile-web-app-able" content="yes">
+<meta name="mobile-web-app-able" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Omnivox">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}
+</style>
+<title>Omnivox</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Schibsted+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Mise en page : en-tête marine collant + bandeau « démo », contenu en cartes, navigation à 5 onglets
+   (barre du bas sur téléphone, rail à gauche sur grand écran). Thème clair, accents bleu foncé. */
+:root {
+  --bg: #f1f5fb;
+  --surface: #ffffff;
+  --ink: #0e1b33;
+  --muted: #56667f;
+  --line: #dbe3ef;
+  --navy: #0d2a5c;
+  --navy-2: #173a7a;
+  --blue: #2a63cf;
+  --sky: #e5edfb;
+  --ok: #1b7f55;
+  --ok-soft: #dcf3e7;
+  --warn-ink: #8a5a00;
+  --warn-soft: #fff1cf;
+  --bad: #b83a1f;
+  --bad-soft: #fbe2dc;
+  --c-ang: #2a63cf;
+  --c-phy: #0c8486;
+  --c-mic: #c1560d;
+  --f-display: "Schibsted Grotesk", "Trebuchet MS", system-ui, sans-serif;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --nav-h: 62px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 calc(var(--nav-h) + 28px);
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--navy); }
+button { font: inherit; color: inherit; cursor: pointer; }
+h1, h2, h3, h4 { font-family: var(--f-display); margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+p { margin: 0; }
+.svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.svg.sm { width: 16px; height: 16px; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* En-tête */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+  background: var(--navy); color: #fff;
+}
+.top-in { display: flex; align-items: center; gap: 12px; padding: 10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); max-width: 1180px; margin: 0 auto; }
+.brand { display: flex; align-items: center; gap: 9px; font-family: var(--f-display); font-weight: 700; font-size: 19px; letter-spacing: -0.02em; border: 0; background: none; color: #fff; padding: 0; }
+.brand svg { width: 30px; height: 30px; }
+.top .grow { flex: 1; min-width: 0; }
+.top h1 { font-size: 18px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.icon-btn { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; border: 0; background: rgba(255,255,255,.12); color: #fff; position: relative; }
+.icon-btn:hover { background: rgba(255,255,255,.22); }
+.avatar { font-family: var(--f-display); font-weight: 700; font-size: 14px; background: #fff; color: var(--navy); }
+.demo-strip { background: var(--warn-soft); color: var(--warn-ink); font-size: 12px; font-weight: 600; text-align: center; padding: 4px 16px; letter-spacing: .01em; }
+
+.wrap { max-width: 1180px; margin: 0 auto; }
+.main { padding-top: 16px; display: grid; gap: 18px; }
+
+/* Navigation */
+.nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+  background: var(--surface); border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+}
+.nav button { background: none; border: 0; display: grid; justify-items: center; gap: 2px; padding: 4px 0; font-size: 11px; font-weight: 600; color: var(--muted); position: relative; }
+.nav button[aria-current="page"] { color: var(--navy); }
+.nav button[aria-current="page"] .svg { stroke-width: 2.4; }
+.nav button[aria-current="page"]::before { content: ""; position: absolute; top: -7px; width: 28px; height: 3px; border-radius: 0 0 3px 3px; background: var(--navy); }
+.badge { position: absolute; top: 0; left: calc(50% + 6px); min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px; background: var(--bad); color: #fff; font-size: 10px; font-weight: 700; display: grid; place-items: center; }
+
+/* Cartes et blocs */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; }
+.card.flush { padding: 0; overflow: hidden; }
+.sec { display: grid; gap: 10px; min-width: 0; }
+.sec > h2 { font-size: 19px; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.sec > h2 .more { font-family: var(--f-body); font-size: 13px; font-weight: 600; color: var(--blue); background: none; border: 0; padding: 0; }
+.cols { display: grid; gap: 18px; min-width: 0; }
+.stack { display: grid; gap: 18px; align-content: start; min-width: 0; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.row.between { justify-content: space-between; }
+.pill { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 9px; border-radius: 999px; background: var(--sky); color: var(--navy); white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--warn-soft); color: var(--warn-ink); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.navy { background: var(--navy); color: #fff; }
+
+/* Accueil */
+.hero { background: var(--navy); color: #fff; border-radius: 14px; padding: 18px 18px 16px; position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; right: -30px; bottom: -34px; width: 170px; height: 170px; background: radial-gradient(circle at 50% 50%, transparent 0 36%, rgba(255,255,255,.07) 36% 38%, transparent 38% 52%, rgba(255,255,255,.07) 52% 54%, transparent 54% 68%, rgba(255,255,255,.07) 68% 70%, transparent 70%); pointer-events: none; }
+.hero .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #aac1ec; }
+.hero h2 { font-size: clamp(24px, 6vw, 32px); margin-top: 3px; }
+.hero p { color: #cfdcf6; margin-top: 4px; font-size: 14px; }
+.hero .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.hero .pill { background: rgba(255,255,255,.14); color: #fff; }
+
+.next { display: grid; gap: 10px; }
+.next .when { font-family: var(--f-display); font-weight: 700; font-size: 26px; color: var(--navy); letter-spacing: -0.02em; }
+.cbar { width: 6px; align-self: stretch; border-radius: 3px; flex: none; }
+.cls { display: flex; gap: 12px; min-width: 0; }
+.cls .t { font-weight: 700; }
+.cls .s { color: var(--muted); font-size: 13.5px; }
+.cls.off { opacity: .55; }
+.cls.off .t { text-decoration: line-through; }
+.tl { display: grid; gap: 12px; }
+.tl .time { width: 46px; flex: none; font-variant-numeric: tabular-nums; font-size: 13px; color: var(--muted); font-weight: 600; }
+.item-btn { width: 100%; text-align: left; background: none; border: 0; padding: 0; display: flex; gap: 12px; align-items: center; min-width: 0; }
+
+.evt { display: flex; gap: 12px; align-items: center; padding: 11px 14px; border-top: 1px solid var(--line); width: 100%; background: none; border-left: 0; border-right: 0; border-bottom: 0; text-align: left; }
+.evt:first-child { border-top: 0; }
+.evt:hover { background: #f7f9fd; }
+.date-chip { width: 46px; flex: none; text-align: center; border-radius: 8px; background: var(--sky); color: var(--navy); padding: 4px 0 5px; line-height: 1.1; }
+.date-chip b { display: block; font-family: var(--f-display); font-size: 19px; }
+.date-chip span { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.date-chip.eval { background: var(--bad-soft); color: var(--bad); }
+.date-chip.exam { background: var(--bad); color: #fff; }
+.date-chip.perso { background: var(--ok-soft); color: var(--ok); }
+.evt .grow, .msg .grow { flex: 1; min-width: 0; }
+.evt .t, .msg .t { font-weight: 600; overflow-wrap: anywhere; }
+.evt .s, .msg .s { font-size: 13px; color: var(--muted); }
+.chev { color: var(--muted); }
+
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; text-align: left; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.tile:hover { border-color: var(--navy-2); }
+.tile .code { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.tile .big { font-family: var(--f-display); font-size: 30px; font-weight: 700; color: var(--ink); line-height: 1; }
+.tile .nm { font-size: 12.5px; color: var(--muted); line-height: 1.25; overflow-wrap: anywhere; }
+.meter { height: 6px; border-radius: 3px; background: var(--sky); overflow: hidden; }
+.meter i { display: block; height: 100%; border-radius: 3px; }
+
+.rcard { background: linear-gradient(0deg, var(--navy-2), var(--navy)); color: #fff; border-radius: 12px; padding: 16px; text-align: left; border: 0; display: grid; gap: 6px; width: 100%; }
+.rcard .lab { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #aac1ec; }
+.rcard .num { font-family: var(--f-display); font-weight: 700; font-size: 44px; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.rcard .sub { color: #cfdcf6; font-size: 13px; }
+
+.quick { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.quick button { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 4px 10px; display: grid; justify-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--navy); text-align: center; line-height: 1.2; }
+.quick button:hover { border-color: var(--navy-2); background: var(--sky); }
+
+.notice { padding: 13px 16px; border-top: 1px solid var(--line); width: 100%; text-align: left; background: none; border-left: 0; border-right: 0; border-bottom: 0; display: grid; gap: 3px; }
+.notice:first-child { border-top: 0; }
+.notice .t { font-weight: 700; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.notice .b { color: var(--muted); font-size: 14px; }
+.notice .b[hidden] { display: none; }
+
+/* Messages */
+.msg { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-top: 1px solid var(--line); width: 100%; text-align: left; background: none; border-left: 0; border-right: 0; border-bottom: 0; }
+.msg:first-child { border-top: 0; }
+.msg:hover { background: #f7f9fd; }
+.msg.unread .t { font-weight: 800; }
+.msg .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--blue); flex: none; }
+.msg .dot.read { background: transparent; }
+.msg .av { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-display); font-weight: 700; color: #fff; flex: none; font-size: 14px; }
+.msg .s { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mbody { white-space: pre-line; line-height: 1.6; }
+
+/* Segments, onglets, champs */
+.seg { display: flex; gap: 4px; background: #e3eaf6; border-radius: 10px; padding: 4px; }
+.seg button { flex: 1; border: 0; background: none; padding: 8px 6px; border-radius: 7px; font-weight: 600; font-size: 14px; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--navy); box-shadow: 0 1px 2px rgba(13,42,92,.15); }
+.chipbar { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.chipbar::-webkit-scrollbar { display: none; }
+.chipbar button { flex: none; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 13px; font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.chipbar button[aria-pressed="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+.field { display: grid; gap: 5px; }
+.field label { font-size: 13px; font-weight: 700; color: var(--navy); }
+.in, select.in, textarea.in { font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1px solid #c3cfe2; border-radius: 9px; padding: 10px 12px; width: 100%; min-width: 0; }
+textarea.in { min-height: 110px; resize: vertical; }
+.btn { border: 0; border-radius: 10px; padding: 11px 16px; font-weight: 700; background: var(--navy); color: #fff; text-align: center; }
+.btn:hover { background: var(--navy-2); }
+.btn.alt { background: var(--sky); color: var(--navy); }
+.btn.alt:hover { background: #d4e0f6; }
+.btn.bad { background: var(--bad); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.search { position: relative; }
+.search .svg { position: absolute; left: 12px; top: 50%; translate: 0 -50%; color: var(--muted); width: 18px; height: 18px; }
+.search .in { padding-left: 38px; }
+
+/* Services */
+.sgroup h3 { font-size: 15px; color: var(--muted); font-weight: 600; letter-spacing: .02em; margin: 0 0 8px; }
+.sgrid { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); }
+.sbtn { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; text-align: left; display: flex; gap: 12px; align-items: center; min-width: 0; }
+.sbtn:hover { border-color: var(--navy-2); }
+.sbtn .ico { width: 38px; height: 38px; border-radius: 10px; background: var(--sky); color: var(--navy); display: grid; place-items: center; flex: none; }
+.sbtn.urg .ico { background: var(--bad-soft); color: var(--bad); }
+.sbtn .t { font-weight: 700; line-height: 1.2; }
+.sbtn .s { font-size: 12.5px; color: var(--muted); line-height: 1.25; }
+
+.kv { display: grid; }
+.kv > div { display: flex; justify-content: space-between; gap: 16px; padding: 10px 14px; border-top: 1px solid var(--line); }
+.kv > div:first-child { border-top: 0; }
+.kv span:first-child { color: var(--muted); }
+.kv span:last-child { font-weight: 600; text-align: right; overflow-wrap: anywhere; min-width: 0; }
+.note { background: var(--sky); border-radius: 10px; padding: 12px 14px; color: var(--navy); font-size: 14px; }
+.note.warn { background: var(--warn-soft); color: var(--warn-ink); }
+.note.bad { background: var(--bad-soft); color: var(--bad); }
+.listrow { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-top: 1px solid var(--line); min-width: 0; }
+.listrow:first-child { border-top: 0; }
+.listrow .grow { flex: 1; min-width: 0; }
+.listrow .t { font-weight: 600; overflow-wrap: anywhere; }
+.listrow .s { font-size: 13px; color: var(--muted); }
+.right { text-align: right; flex: none; }
+.toggle { width: 46px; height: 28px; border-radius: 14px; border: 0; background: #b9c6dc; position: relative; flex: none; padding: 0; }
+.toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform .15s; }
+.toggle[aria-checked="true"] { background: var(--navy); }
+.toggle[aria-checked="true"]::after { transform: translateX(18px); }
+
+/* Horaire */
+.days { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.days button { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 7px 0; display: grid; justify-items: center; line-height: 1.15; font-size: 12px; color: var(--muted); font-weight: 600; }
+.days button b { font-family: var(--f-display); font-size: 18px; color: var(--ink); }
+.days button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #cfdcf6; }
+.days button[aria-pressed="true"] b { color: #fff; }
+.days button.today b::after { content: ""; display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--blue); margin: 1px auto 0; }
+.days button.free { opacity: .65; }
+.grid-wrap { overflow-x: auto; }
+.wk { display: grid; grid-template-columns: 38px repeat(5, minmax(0, 1fr)); gap: 0; min-width: 320px; position: relative; }
+.wk .hh { font-size: 10.5px; color: var(--muted); text-align: right; padding-right: 6px; font-variant-numeric: tabular-nums; }
+.wk .colh { text-align: center; font-size: 12px; font-weight: 700; padding: 6px 0; color: var(--navy); }
+.wk .colh.today { color: var(--blue); }
+.wk .col { position: relative; border-left: 1px solid var(--line); height: 330px; background: repeating-linear-gradient(0deg, transparent 0 59px, #edf1f8 59px 60px); }
+.blk { position: absolute; left: 2px; right: 2px; border-radius: 6px; color: #fff; padding: 4px 5px; font-size: 11px; font-weight: 700; line-height: 1.2; text-align: left; border: 0; overflow: hidden; }
+.blk small { display: block; font-weight: 500; opacity: .9; font-size: 10px; }
+.month { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.month .dow { font-size: 11px; font-weight: 700; color: var(--muted); text-align: center; padding: 4px 0; }
+.month .day { aspect-ratio: 1 / 1.05; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; display: grid; align-content: space-between; justify-items: center; padding: 4px 0 5px; font-weight: 600; font-size: 14px; min-width: 0; }
+.month .day.out { opacity: .35; }
+.month .day.today { border-color: var(--blue); box-shadow: inset 0 0 0 1px var(--blue); }
+.month .day[aria-pressed="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+.dots { display: flex; gap: 3px; height: 6px; }
+.dots i { width: 6px; height: 6px; border-radius: 50%; }
+
+/* Notes */
+.cour-head { border-radius: 14px; color: #fff; padding: 18px; display: grid; gap: 6px; }
+.cour-head .big { font-family: var(--f-display); font-size: 52px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+.cour-head p { opacity: .92; font-size: 14px; }
+.evrow { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 14px; border-top: 1px solid var(--line); }
+.evrow:first-child { border-top: 0; }
+.evrow .t { font-weight: 600; overflow-wrap: anywhere; }
+.evrow .s { font-size: 13px; color: var(--muted); }
+.evrow .g { font-family: var(--f-display); font-weight: 700; font-size: 20px; text-align: right; font-variant-numeric: tabular-nums; }
+.evrow .g.pend { font-size: 13px; color: var(--muted); font-family: var(--f-body); font-weight: 600; }
+.slider { width: 100%; accent-color: var(--navy); }
+.big-out { font-family: var(--f-display); font-size: 40px; font-weight: 700; color: var(--navy); line-height: 1; }
+.sess { border-top: 1px solid var(--line); }
+.sess:first-child { border-top: 0; }
+.sess > button { width: 100%; background: none; border: 0; display: flex; align-items: center; gap: 10px; padding: 14px; text-align: left; }
+.sess .grow { flex: 1; min-width: 0; }
+.sess .t { font-weight: 700; }
+.sess .rot { transition: transform .15s; }
+.sess[data-open="1"] .rot { transform: rotate(90deg); }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); padding: 6px 8px; background: #f6f8fc; }
+.tbl td { padding: 9px 8px; border-top: 1px solid var(--line); vertical-align: top; font-variant-numeric: tabular-nums; }
+.tbl th.n, .tbl td.n { text-align: right; }
+.tbl-wrap { overflow-x: auto; }
+.gauge { position: relative; height: 12px; border-radius: 6px; background: linear-gradient(90deg, #cdd9ee, #6f93d6 70%, var(--navy)); margin: 26px 0 22px; }
+.gauge .mark { position: absolute; top: -8px; width: 4px; height: 28px; background: var(--ink); border-radius: 2px; translate: -2px 0; }
+.gauge .mark span { position: absolute; bottom: 31px; left: 50%; translate: -50% 0; background: var(--ink); color: #fff; font-size: 12px; font-weight: 700; padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
+.gauge .tick { position: absolute; top: 18px; font-size: 11px; color: var(--muted); translate: -50% 0; font-variant-numeric: tabular-nums; }
+.spark { width: 100%; height: auto; display: block; }
+
+/* Feuille modale et toast */
+.scrim { position: fixed; inset: 0; background: rgba(8,20,45,.5); z-index: 40; display: grid; align-items: end; justify-items: center; }
+.sheet { background: var(--surface); width: min(100%, 560px); max-height: 88vh; overflow-y: auto; border-radius: 18px 18px 0 0; padding: 18px max(18px, env(safe-area-inset-left, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 14px; }
+.sheet .grab { width: 40px; height: 4px; border-radius: 2px; background: #c3cfe2; justify-self: center; }
+.sheet h3 { font-size: 20px; }
+#toast { position: fixed; left: 50%; bottom: calc(var(--nav-h) + 18px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 60; max-width: min(92vw, 420px); text-align: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+#toast.on { opacity: 1; }
+
+.foot { text-align: center; color: var(--muted); font-size: 12px; padding: 8px 0 0; }
+.empty { text-align: center; color: var(--muted); padding: 28px 16px; }
+
+@media (min-width: 640px) {
+  .tiles { gap: 14px; }
+  .quick { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+}
+@media (min-width: 900px) {
+  body { padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); padding-bottom: 40px; }
+  .nav { top: 0; bottom: 0; right: auto; width: 208px; grid-template-columns: 1fr; align-content: start; gap: 4px; padding: 24px 12px 12px; border-top: 0; border-right: 1px solid var(--line); }
+  .nav button { grid-auto-flow: column; justify-content: start; gap: 12px; font-size: 15px; padding: 11px 14px; border-radius: 10px; }
+  .nav button[aria-current="page"] { background: var(--sky); }
+  .nav button[aria-current="page"]::before { display: none; }
+  .badge { position: static; margin-left: auto; }
+  .top { margin-inline: calc(-1 * max(24px, env(safe-area-inset-left, 0px))) calc(-1 * max(24px, env(safe-area-inset-right, 0px))); }
+  .top-in { margin-left: 208px; max-width: none; padding-left: 24px; }
+  .demo-strip { padding-left: 208px; }
+  .wrap { margin-left: 208px; max-width: none; padding-left: 4px; }
+  .main { max-width: 1040px; }
+  .cols.two { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; }
+  #toast { bottom: 24px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .toggle::after, .sess .rot { transition: none; } }
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ============ Utilitaires ============ */
+  var JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+  var JC = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
+  var MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+  var MC = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function p2(n) { return (n < 10 ? "0" : "") + n; }
+  function dkey(d) { return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()); }
+  function pd(k) { var a = k.split("-"); return new Date(+a[0], +a[1] - 1, +a[2]); }
+  function mins(t) { var a = t.split(":"); return +a[0] * 60 + +a[1]; }
+  function hm(t) { return t.replace(":", " h ").replace(/ h 00$/, " h"); }
+  function dlong(d) { return JOURS[d.getDay()] + " " + d.getDate() + " " + MOIS[d.getMonth()]; }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function fr(n, dec) { return n.toFixed(dec == null ? 1 : dec).replace(".", ","); }
+  function addDays(d, n) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); return x; }
+  function ic(name, cls) {
+    var P = {
+      home: '<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+      clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+      chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+      mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+      grid: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+      back: '<path d="m15 5-7 7 7 7"/>', chev: '<path d="m9 5 7 7-7 7"/>', plus: '<path d="M12 5v14M5 12h14"/>',
+      search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>', cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/>',
+      book: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/>', card: '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
+      user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>', heart: '<path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/>',
+      alert: '<path d="M12 3 2 20h20z"/><path d="M12 10v5M12 18v.5"/>', file: '<path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/>',
+      shield: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>', map: '<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+      star: '<path d="m12 3.2 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/>', bell: '<path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4z"/><path d="M10 21h4"/>',
+      car: '<path d="M5 16V11l2-5h10l2 5v5M3 16h18M7 19v-3M17 19v-3"/>', tag: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>',
+      vote: '<path d="M5 12h14v8H5z"/><path d="m8 12 4-9 4 9"/>', key: '<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3"/>',
+      phone: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>', check: '<path d="m5 12 5 5 9-10"/>', x: '<path d="M6 6l12 12M18 6 6 18"/>',
+      door: '<path d="M6 21V4h12v17M4 21h16"/><circle cx="15" cy="12.5" r=".8"/>', users: '<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5M17 5a3.5 3.5 0 0 1 0 7M22 20c0-2.5-1.5-4-4-4.8"/>',
+      brain: '<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V4a3 3 0 0 0-3 0zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/>',
+      cap: '<path d="M2 9 12 4l10 5-10 5z"/><path d="M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5M22 9v6"/>', swap: '<path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',
+      pen: '<path d="M4 20l1-5L17 3l4 4L9 19z"/>', box: '<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>', cup: '<path d="M5 3h14v6a7 7 0 0 1-14 0zM9 21h6M12 16v5"/>'
+    };
+    return '<svg class="svg' + (cls ? " " + cls : "") + '" viewBox="0 0 24 24" aria-hidden="true">' + (P[name] || P.file) + '</svg>';
+  }
+  var LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#fff"/><path d="M5 25 14 8l4.5 8 3-4.5L27 25z" fill="#0d2a5c"/><path d="M14 8v-4.5l5 1.8-5 1.7" fill="#2a63cf"/></svg>';
+
+  /* ============ Données fictives ============ */
+  var STUDENT = { first: "Esdras", last: "Tambwe amisi", id: "DÉMO-000000", prog: "Sciences de la nature · profil Santé", email: "Esdras.Tambweamisi@cegepoutaouais.qc.ca", since: "Automne 2024" };
+  var COLLEGE = "cégep outaouais";
+  var SESSION = { name: "Automne 2026", start: "2026-08-24", classEnd: "2026-12-04", end: "2026-12-18" };
+
+  var COURSES = [
+    {
+      id: "ang", code: "ANG-4C1", name: "Anglais collégial 4", sub: "English for Science and Health", teacher: "Margaret O’Connell", email: "m.oconnell@cegepoutaouais.qc.ca", office: "C-112 · mardi 11 h 30 à 12 h 30", color: "--c-ang", units: "2-2-2", group: "A-07",
+      plan: ["Scientific writing and argumentation", "Oral presentation: communicating research", "Reading comprehension of academic articles", "Grammar in context and editing", "Final research essay (4 to 5 pages)"],
+      evals: [
+        { n: "Grammar and Vocabulary Quiz", w: 15, g: 90, d: "2026-09-17", avg: 78 },
+        { n: "Oral Presentation", w: 20, g: 92, d: "2026-10-01", avg: 81 },
+        { n: "Reading Journal", w: 15, g: 86, d: "2026-10-08", avg: 79 },
+        { n: "Midterm Essay", w: 25, g: 88, d: "2026-10-13", avg: 76 },
+        { n: "Final Exam", w: 25, g: null, d: "2026-12-08", t: "13:30", where: "Salle d’examen G-1", exam: 1 }
+      ]
+    },
+    {
+      id: "phy", code: "BIO-5P2", name: "Physiologie humaine", sub: "Systèmes cardiovasculaire, respiratoire, nerveux et rénal", teacher: "Étienne Beaulieu-Marchand", email: "e.beaulieu@cegepoutaouais.qc.ca", office: "B-230 · jeudi 10 h à 11 h", color: "--c-phy", units: "2-2-2", group: "P-02",
+      plan: ["Homéostasie et communication cellulaire", "Système cardiovasculaire", "Système respiratoire", "Système nerveux et sensoriel", "Système rénal et équilibre acido-basique", "Système endocrinien"],
+      evals: [
+        { n: "Laboratoire 1 · Mesures cardiaques", w: 10, g: 85, d: "2026-09-14", avg: 77 },
+        { n: "Quiz respiratoire", w: 10, g: 90, d: "2026-09-28", avg: 74 },
+        { n: "Test · Système cardiovasculaire", w: 20, g: 88, d: "2026-10-05", avg: 72 },
+        { n: "Rapport de laboratoire 2", w: 15, g: 84, d: "2026-10-09", avg: 75 },
+        { n: "Examen de mi-session", w: 25, g: 89, d: "2026-10-14", avg: 71 },
+        { n: "Rapport de laboratoire 3", w: 5, g: null, d: "2026-10-26" },
+        { n: "Examen final", w: 15, g: null, d: "2026-12-10", t: "13:30", where: "Salle d’examen G-1", exam: 1 }
+      ]
+    },
+    {
+      id: "mic", code: "BIO-5M3", name: "Microbiologie", sub: "Bactéries, virus et défenses de l’organisme", teacher: "Nathalie Desrosiers-Kane", email: "n.desrosiers@cegepoutaouais.qc.ca", office: "B-308 · lundi 11 h à 12 h", color: "--c-mic", units: "2-2-2", group: "M-01",
+      plan: ["Structure et croissance bactérienne", "Techniques de coloration et de culture", "Métabolisme et génétique microbienne", "Antibiotiques et résistance", "Virologie", "Immunité et vaccination"],
+      evals: [
+        { n: "Laboratoire · Coloration de Gram", w: 10, g: 95, d: "2026-09-15", avg: 82 },
+        { n: "Test 1 · Structure et croissance", w: 20, g: 91, d: "2026-09-29", avg: 73 },
+        { n: "Rapport · Cultures bactériennes", w: 15, g: 90, d: "2026-10-07", avg: 78 },
+        { n: "Examen de mi-session", w: 25, g: 93, d: "2026-10-13", avg: 72 },
+        { n: "Quiz · Antibiotiques", w: 10, g: 94, d: "2026-10-14", avg: 80 },
+        { n: "Projet de synthèse · Pathogène émergent", w: 8, g: null, d: "2026-11-23" },
+        { n: "Examen final", w: 12, g: null, d: "2026-12-14", t: "13:30", where: "Salle d’examen G-1", exam: 1 }
+      ]
+    }
+  ];
+  function C(id) { return COURSES.filter(function (c) { return c.id === id; })[0]; }
+  function cStats(c) {
+    var w = 0, s = 0, wa = 0, sa = 0;
+    c.evals.forEach(function (e) { if (e.g != null) { w += e.w; s += e.w * e.g; if (e.avg != null) { wa += e.w; sa += e.w * e.avg; } } });
+    return { done: w, avg: w ? s / w : 0, earned: s / 100, left: 100 - w, grpAvg: wa ? sa / wa : 0 };
+  }
+
+  var SCHED = [
+    { c: "phy", d: 1, s: "13:00", e: "15:00", room: "B-214", kind: "Théorie" },
+    { c: "ang", d: 1, s: "15:15", e: "17:15", room: "C-108", kind: "Cours" },
+    { c: "mic", d: 2, s: "13:30", e: "16:30", room: "Laboratoire B-305", kind: "Laboratoire" },
+    { c: "ang", d: 3, s: "13:00", e: "15:00", room: "C-108", kind: "Cours" },
+    { c: "phy", d: 3, s: "15:15", e: "17:15", room: "Laboratoire B-221", kind: "Laboratoire" },
+    { c: "mic", d: 4, s: "13:00", e: "15:00", room: "B-216", kind: "Théorie" }
+  ];
+  var NOCLASS = { "2026-10-12": "Congé de l’Action de grâce", "2026-11-06": "Journée pédagogique" };
+  var CANCEL = { "2026-10-21|phy|3": "Laboratoire annulé : l’enseignant est en formation. Le contenu sera repris le 28 octobre." };
+  var MOVED = { "2026-10-22|mic|4": "B-312" };
+
+  var EVENTS = [
+    { d: "2026-10-16", title: "Journée pédagogique du personnel", type: "college", where: "Aucun cours le vendredi pour toi", desc: "Les services administratifs sont ouverts de 9 h à 16 h." },
+    { d: "2026-10-19", t: "12:00", e: "13:00", title: "Atelier : rédiger sa lettre de présentation", type: "college", where: "Centre d’aide à la réussite", desc: "Animé par une conseillère d’orientation. Places limitées." },
+    { d: "2026-10-21", t: "10:00", e: "15:00", title: "Salon des universités", type: "college", where: "Hall principal", desc: "Quatorze universités du Québec et de l’Ontario seront présentes. Admission, bourses et programmes contingentés." },
+    { d: "2026-10-22", t: "12:00", e: "13:00", title: "Conférence · Carrières en santé", type: "college", where: "Amphithéâtre A", desc: "Panel de diplômés en médecine, pharmacie, physiothérapie et sciences infirmières." },
+    { d: "2026-10-28", t: "12:15", e: "13:00", title: "Séance d’information · demande de diplôme", type: "admin", where: "Salle C-020", desc: "Pour les finissants : conditions d’obtention du DEC, épreuve uniforme et cérémonie." },
+    { d: "2026-10-30", t: "19:00", e: "23:00", title: "Soirée d’Halloween de l’association étudiante", type: "social", where: "Cafétéria", desc: "Déguisement encouragé. Entrée : 5 $ (prévente à l’association)." },
+    { d: "2026-11-11", t: "10:55", e: "11:15", title: "Minute de silence", type: "college", where: "Hall principal", desc: "Cérémonie du souvenir." },
+    { d: "2026-11-13", title: "Date limite · Demande de sanction du DEC", type: "admin", where: "Dans Services › Mon parcours", desc: "Passé ce délai, l’obtention du diplôme en décembre n’est pas garantie." },
+    { d: "2026-11-16", e: "2026-11-20", title: "Semaine des sciences", type: "college", where: "Hall des sciences", desc: "Kiosques, démonstrations et expo-sciences des étudiants." },
+    { d: "2026-12-04", title: "Dernier jour de cours", type: "admin", where: "", desc: "La période d’examens finaux commence le 7 décembre." },
+    { d: "2026-12-12", t: "18:00", e: "23:30", title: "Bal des finissants", type: "social", where: "Salle Horizon", desc: "Billets en vente jusqu’au 30 novembre auprès de l’association étudiante." },
+    { d: "2026-12-18", title: "Fin de la session", type: "admin", where: "", desc: "Les résultats finaux sont publiés quelques jours plus tard." },
+    { d: "2026-12-22", title: "Publication des résultats finaux", type: "admin", where: "Dans Notes", desc: "Tu recevras un avis dès que les notes seront disponibles." }
+  ];
+  function allEvents() {
+    var out = EVENTS.map(function (e) { return { d: e.d, ed: e.e && e.e.length === 10 ? e.e : null, t: e.ed ? null : e.t, e: e.e && e.e.length === 5 ? e.e : null, title: e.title, type: e.type, where: e.where, desc: e.desc }; });
+    COURSES.forEach(function (c) {
+      c.evals.forEach(function (e) {
+        if (e.g == null) out.push({ d: e.d, t: e.t || null, e: e.t ? addMin(e.t, 180) : null, title: (e.exam ? "Examen final · " : "À remettre · ") + c.name + (e.exam ? "" : " (" + e.n + ")"), type: e.exam ? "exam" : "eval", where: e.where || "Dépôt dans l’espace de cours", desc: "Pondération : " + e.w + " % de la note finale.", c: c.id });
+      });
+    });
+    S.perso.forEach(function (p, i) { out.push({ d: p.d, t: p.t || null, title: p.title, type: "perso", where: p.where || "", desc: p.desc || "Événement personnel", pi: i }); });
+    return out;
+  }
+  function addMin(t, m) { var x = mins(t) + m; return p2(Math.floor(x / 60)) + ":" + p2(x % 60); }
+  var TCOL = { college: "var(--navy-2)", admin: "#6b7a94", social: "#b5398f", exam: "var(--bad)", eval: "var(--warn-ink)", perso: "var(--ok)", cours: "var(--blue)" };
+  var TLAB = { college: "Collège", admin: "Administratif", social: "Vie étudiante", exam: "Examen", eval: "Remise", perso: "Personnel" };
+
+  var NOTICES = [
+    { id: "n1", t: "Salon des universités le 21 octobre", tag: "Finissants", d: "2026-10-12", b: "Rencontre les représentants de quatorze universités au hall principal, de 10 h à 15 h. Apporte ton relevé de notes et ta cote R : plusieurs équipes d’admission feront des évaluations préliminaires sur place." },
+    { id: "n2", t: "Demande de diplôme : date limite le 13 novembre", tag: "Important", d: "2026-10-09", b: "Les finissants doivent soumettre leur demande de sanction du DEC avant le 13 novembre. Une séance d’information aura lieu le 28 octobre à 12 h 15, salle C-020." },
+    { id: "n3", t: "Travaux au stationnement B", tag: "Campus", d: "2026-10-14", b: "Du 19 au 30 octobre, la moitié du stationnement B sera fermée. Utilise le stationnement C ou le transport en commun. Les permis restent valides dans les deux zones." },
+    { id: "n4", t: "La bibliothèque prolonge ses heures", tag: "Études", d: "2026-10-07", b: "À partir du 19 octobre, la bibliothèque ouvre jusqu’à 21 h du lundi au jeudi et offre des salles de travail réservables en ligne." },
+    { id: "n5", t: "Vaccination contre la grippe sur le campus", tag: "Santé", d: "2026-10-05", b: "Une clinique sans rendez-vous aura lieu le 4 novembre, de 9 h à 15 h, à l’infirmerie. Apporte ta carte d’assurance maladie." },
+    { id: "n6", t: "Bourses de persévérance : dépôt jusqu’au 6 novembre", tag: "Aide financière", d: "2026-10-02", b: "La Fondation du Collège lance son concours annuel. Formulaire disponible dans Services › Formulaires en ligne." }
+  ];
+
+  var MESSAGES = [
+    { id: "m1", from: "Margaret O’Connell", role: "Enseignante · Anglais collégial 4", c: "ang", subj: "Final Research Essay · topic approval", date: "2026-10-14 16:20", unread: 1, body: "Hi Esdras,\n\nI read your proposal on antibiotic resistance and public communication. It is a strong topic and well scoped for a four-page essay. Please add two peer-reviewed sources published after 2020 and send me your outline by Friday, October 23.\n\nYour midterm essay was very well structured. Keep that same clarity in the final one.\n\nBest,\nMargaret O’Connell" },
+    { id: "m2", from: "Étienne Beaulieu-Marchand", role: "Enseignant · Physiologie humaine", c: "phy", subj: "Corrigé de l’examen de mi-session", date: "2026-10-14 14:05", unread: 1, body: "Bonjour Esdras,\n\nLes copies sont corrigées et ton résultat est maintenant visible dans l’onglet Notes. Le corrigé détaillé est déposé dans l’espace de cours. Si tu souhaites revoir ta copie, passe à mon bureau jeudi entre 10 h et 11 h.\n\nRappel : le rapport du laboratoire 3 est à remettre le lundi 26 octobre.\n\nÉtienne Beaulieu-Marchand" },
+    { id: "m3", from: "Nathalie Desrosiers-Kane", role: "Enseignante · Microbiologie", c: "mic", subj: "Projet de synthèse : choix du pathogène", date: "2026-10-13 09:40", unread: 1, body: "Bonjour à tous,\n\nVous pouvez dès maintenant choisir le pathogène émergent de votre projet de synthèse. Inscrivez votre choix dans le document partagé avant le 30 octobre; un même pathogène ne peut être choisi que par deux étudiants.\n\nLe projet compte pour 8 % de la note finale. La grille d’évaluation est dans l’espace de cours.\n\nNathalie Desrosiers-Kane" },
+    { id: "m4", from: "Service du registrariat", role: "cégep outaouais", c: "col", subj: "Demande de sanction du DEC : à faire avant le 13 novembre", date: "2026-10-12 08:30", unread: 1, body: "Bonjour,\n\nNotre dossier indique que tu pourrais terminer ton programme à la fin de la session Automne 2026. Pour obtenir ton diplôme, tu dois soumettre une demande de sanction dans Services › Mon parcours avant le 13 novembre.\n\nUne séance d’information aura lieu le 28 octobre à 12 h 15 en salle C-020.\n\nService du registrariat" },
+    { id: "m5", from: "Bibliothèque", role: "cégep outaouais", c: "col", subj: "Rappel : un document arrive à échéance", date: "2026-10-11 07:00", unread: 0, body: "Bonjour Esdras,\n\nUn de tes documents empruntés arrive à échéance le 19 octobre. Tu peux le renouveler en un clic dans Services › Bibliothèque.\n\nBibliothèque" },
+    { id: "m6", from: "Conseillère d’orientation", role: "Services d’orientation", c: "col", subj: "Ton rendez-vous du 8 octobre", date: "2026-10-08 15:12", unread: 0, body: "Bonjour Esdras,\n\nMerci d’être passé(e). Voici le résumé de notre rencontre : tu envisages une admission en pharmacie ou en sciences biomédicales. Les dates limites d’admission pour l’automne 2027 tombent généralement en mars; prépare tes lettres de recommandation dès novembre.\n\nTu peux reprendre rendez-vous quand tu veux.\n\nConseillère d’orientation" },
+    { id: "m7", from: "Margaret O’Connell", role: "Enseignante · Anglais collégial 4", c: "ang", subj: "Oral presentation feedback", date: "2026-10-02 10:15", unread: 0, body: "Hi Esdras,\n\nExcellent presentation. Your pacing was good and your slides were easy to follow. For the final exam, work on linking words to make your arguments flow even better.\n\nMargaret" },
+    { id: "m8", from: "Association étudiante", role: "Vie étudiante", c: "col", subj: "Bal des finissants : les billets sont en vente", date: "2026-10-01 12:00", unread: 0, body: "Salut les finissants !\n\nLes billets pour le Bal du 12 décembre sont en vente au local de l’association, de 11 h à 14 h, du lundi au jeudi. Prix : 65 $ avec repas.\n\nOn a hâte de célébrer avec vous !\nL’association étudiante" },
+    { id: "m9", from: "Services informatiques", role: "cégep outaouais", c: "col", subj: "Maintenance planifiée samedi 17 octobre", date: "2026-09-30 16:45", unread: 0, body: "Bonjour,\n\nLes services en ligne seront inaccessibles samedi 17 octobre, de 1 h à 5 h, pour une mise à jour planifiée. Pense à déposer tes travaux avant.\n\nServices informatiques" },
+    { id: "m10", from: "Nathalie Desrosiers-Kane", role: "Enseignante · Microbiologie", c: "mic", subj: "Résultat du laboratoire de Gram", date: "2026-09-18 11:30", unread: 0, body: "Bravo Esdras, ta coloration était parfaite et ton compte rendu très clair. Continue comme ça pour les prochains laboratoires." },
+    { id: "m11", from: "Aide financière", role: "cégep outaouais", c: "col", subj: "Bourses de persévérance : ouverture du concours", date: "2026-09-25 09:00", unread: 0, body: "Le concours des bourses de persévérance est ouvert jusqu’au 6 novembre. Le formulaire se trouve dans Services › Formulaires en ligne. Les critères : progression scolaire, engagement dans le milieu et situation financière." },
+    { id: "m12", from: "Étienne Beaulieu-Marchand", role: "Enseignant · Physiologie humaine", c: "phy", subj: "Consignes de sécurité en laboratoire", date: "2026-09-08 08:15", unread: 0, body: "Bonjour à tous,\n\nPour le laboratoire de la semaine prochaine : sarrau, lunettes de protection et chaussures fermées sont obligatoires. Aucune exception ne sera faite.\n\nÉtienne Beaulieu-Marchand" }
+  ];
+
+  /* Registre de notes et cote R (étudiant fictif de Sciences de la nature) */
+  var REG = [
+    { s: "Automne 2024", rows: [
+      ["Chimie générale", 84, 74, 9, "Spécifique"], ["Calcul différentiel", 88, 72, 12, "Spécifique"], ["Biologie générale · Évolution et diversité", 86, 75, 8, "Spécifique"],
+      ["Français 1 · Écriture et littérature", 82, 76, 7, "Général"], ["Éducation physique 1 · Activité physique et santé", 90, 82, 6, "Général"], ["Anglais collégial 1", 91, 80, 8, "Général"] ] },
+    { s: "Hiver 2025", rows: [
+      ["Chimie des solutions", 85, 73, 10, "Spécifique"], ["Calcul intégral", 90, 71, 13, "Spécifique"], ["Physique · Mécanique", 83, 72, 11, "Spécifique"], ["Biologie cellulaire", 87, 74, 9, "Spécifique"],
+      ["Français 2 · Littérature et imaginaire", 85, 77, 7, "Général"], ["Anglais collégial 2", 87, 79, 8, "Général"], ["Complémentaire · Histoire de l’art", 90, 83, 6, "Complémentaire"] ] },
+    { s: "Automne 2025", rows: [
+      ["Chimie organique", 88, 70, 12, "Spécifique"], ["Algèbre linéaire et géométrie vectorielle", 91, 73, 11, "Spécifique"], ["Physique · Ondes et électricité", 86, 72, 10, "Spécifique"],
+      ["Philosophie 1 · L’être humain", 89, 78, 8, "Général"], ["Français 3 · Littérature québécoise", 87, 78, 7, "Général"], ["Éducation physique 2 · Efficacité", 92, 84, 5, "Général"], ["Anglais collégial 3", 88, 79, 8, "Général"] ] },
+    { s: "Hiver 2026", rows: [
+      ["Biochimie", 90, 71, 11, "Spécifique"], ["Statistiques appliquées", 89, 74, 10, "Spécifique"], ["Chimie analytique", 86, 72, 11, "Spécifique"],
+      ["Philosophie 2 · Éthique et politique", 87, 77, 8, "Général"], ["Français 4 · Communication et argumentation", 88, 77, 8, "Général"], ["Éducation physique 3 · En projet", 94, 85, 5, "Général"], ["Complémentaire · Initiation à la psychologie", 91, 81, 7, "Complémentaire"] ] }
+  ];
+  var COTE_R = 32.987;
+  function regStats() {
+    var n = 0, sum = 0, z = 0;
+    REG.forEach(function (s) { s.rows.forEach(function (r) { n++; sum += r[1]; z += (r[1] - r[2]) / r[3]; }); });
+    return { n: n, avg: sum / n, z: z / n };
+  }
+
+  /* ============ État ============ */
+  var KEY = "cap-campus-demo-v1";
+  var DEF = { route: "accueil", param: null, hTab: "sem", dayIdx: null, weekOff: 0, mY: 2026, mM: 9, selDate: null, mFilter: "all", msgFilter: "all", notesTab: "session", open: {}, read: {}, sent: [], perso: [], votes: {}, loans: {}, acts: {}, bookings: [], twofa: true, devices: [1, 2, 3], notif: { notes: true, msg: true, cal: true, avis: false }, diploma: false, demoOn: false, demoDate: "2026-10-15", demoTime: "13:40", reviews: [], ads: {}, parking: false, payments: {}, expanded: {} };
+  var S = JSON.parse(JSON.stringify(DEF));
+  var PERSIST = ["read", "sent", "perso", "votes", "loans", "acts", "bookings", "twofa", "devices", "notif", "diploma", "demoOn", "demoDate", "demoTime", "reviews", "ads", "parking", "payments"];
+  try { var raw = localStorage.getItem(KEY); if (raw) { var o = JSON.parse(raw); PERSIST.forEach(function (k) { if (o[k] != null) S[k] = o[k]; }); } } catch (e) {}
+  function save() { try { var o = {}; PERSIST.forEach(function (k) { o[k] = S[k]; }); localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+  var sheet = null;
+
+  function NOW() {
+    if (S.demoOn && S.demoDate) { var a = S.demoDate.split("-"), t = (S.demoTime || "12:00").split(":"); return new Date(+a[0], +a[1] - 1, +a[2], +t[0], +t[1]); }
+    var r = new Date();
+    if (dkey(r) < SESSION.start || dkey(r) > SESSION.end) return new Date(2026, 9, 15, r.getHours(), r.getMinutes());
+    return r;
+  }
+  function isUnread(m) { return S.read[m.id] == null ? !!m.unread : !S.read[m.id]; }
+  function unreadCount() { return MESSAGES.filter(isUnread).length; }
+
+  function classesOn(d) {
+    var k = dkey(d), wd = d.getDay();
+    if (wd < 1 || wd > 4 || k < SESSION.start || k > SESSION.classEnd || NOCLASS[k]) return [];
+    return SCHED.filter(function (s) { return s.d === wd; }).map(function (s) {
+      var key = k + "|" + s.c + "|" + s.d, st = CANCEL[key] ? "annule" : MOVED[key] ? "deplace" : "ok";
+      return { c: s.c, s: s.s, e: s.e, kind: s.kind, status: st, room: MOVED[key] ? MOVED[key] : s.room, note: CANCEL[key] || (MOVED[key] ? "Local modifié : " + MOVED[key] : ""), date: k };
+    }).sort(function (a, b) { return mins(a.s) - mins(b.s); });
+  }
+  function nextClass(now) {
+    for (var i = 0; i < 21; i++) {
+      var d = addDays(now, i), list = classesOn(d);
+      for (var j = 0; j < list.length; j++) {
+        var c = list[j];
+        if (c.status === "annule") continue;
+        if (i === 0 && mins(c.e) <= now.getHours() * 60 + now.getMinutes()) continue;
+        return { c: c, day: d, i: i };
+      }
+    }
+    return null;
+  }
+
+  /* ============ Rendu ============ */
+  var root = document.getElementById("app");
+  var TOP = { accueil: 1, horaire: 1, notes: 1, messages: 1, services: 1 };
+  var TITLES = { accueil: "Accueil", horaire: "Horaire et calendrier", notes: "Notes", messages: "Messagerie", services: "Mes services", cours: "Détail du cours", msg: "Message", compte: "Mon compte", svc: "Service" };
+
+  function render(keepScroll) {
+    var y = window.scrollY, page;
+    try { page = (PAGES[S.route] || PAGES.accueil)(); } catch (err) { page = '<div class="card note bad">Une erreur est survenue : ' + esc(err.message) + '</div>'; }
+    var title = S.route === "svc" ? (SVCTITLE(S.param) || "Service") : (TITLES[S.route] || "");
+    var topLevel = !!TOP[S.route];
+    var nav = [["accueil", "home", "Accueil"], ["horaire", "clock", "Horaire"], ["notes", "chart", "Notes"], ["messages", "mail", "Messages"], ["services", "grid", "Services"]];
+    var navHTML = nav.map(function (n) {
+      var cur = S.route === n[0] || (S.route === "cours" && n[0] === "notes") || (S.route === "msg" && n[0] === "messages") || (S.route === "svc" && n[0] === "services") || (S.route === "compte" && n[0] === "services");
+      var bd = n[0] === "messages" && unreadCount() ? '<span class="badge">' + unreadCount() + "</span>" : "";
+      return '<button data-act="go" data-r="' + n[0] + '"' + (cur ? ' aria-current="page"' : "") + ">" + ic(n[1]) + "<span>" + n[2] + "</span>" + bd + "</button>";
+    }).join("");
+    var head = '<header class="top"><div class="top-in">' +
+      (topLevel ? '<button class="brand" data-act="go" data-r="accueil" aria-label="Accueil">' + LOGO + "<span>Omnivox</span></button><span class='grow'></span>" :
+        '<button class="icon-btn" data-act="back" aria-label="Retour">' + ic("back") + '</button><h1 class="grow">' + esc(title) + "</h1>") +
+      '<button class="icon-btn avatar" data-act="go" data-r="compte" aria-label="Mon compte">' + esc(STUDENT.first.charAt(0) + STUDENT.last.charAt(0)) + "</button></div>" +
+      '<div class="demo-strip"> </div></header>';
+    root.innerHTML = head + '<div class="wrap"><main class="main">' + page + "</main></div>" + '<nav class="nav" aria-label="Navigation principale">' + navHTML + "</nav>" + (sheet ? '<div class="scrim" data-act="scrim"><div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>' + sheet + "</div></div>" : "");
+    if (keepScroll) window.scrollTo(0, y);
+  }
+  function go(r, p) {
+    S.route = r; S.param = p == null ? null : p; sheet = null; render(false); window.scrollTo(0, 0);
+    try { history.replaceState(null, "", "#" + r + (p ? "-" + p : "")); } catch (e) {}
+  }
+  var BACK = { cours: "notes", msg: "messages", compte: "services", svc: "services" };
+  function toast(t) { var el = document.getElementById("toast"); el.textContent = t; el.className = "on"; clearTimeout(toast.t); toast.t = setTimeout(function () { el.className = ""; }, 2600); }
+  function openSheet(html) { sheet = html; render(true); }
+  function closeSheet() { sheet = null; render(true); }
+
+  /* ---------- Blocs réutilisables ---------- */
+  function sec(title, inner, more) { return '<section class="sec"><h2><span>' + title + "</span>" + (more ? '<button class="more" data-act="go" data-r="' + more[0] + '"' + (more[2] ? ' data-p="' + more[2] + '"' : "") + ">" + more[1] + "</button>" : "") + "</h2>" + inner + "</section>"; }
+  function kv(rows) { return '<div class="card flush kv">' + rows.map(function (r) { return "<div><span>" + esc(r[0]) + "</span><span>" + esc(r[1]) + "</span></div>"; }).join("") + "</div>"; }
+  function lr(t, s, right, extra) { return '<div class="listrow"><div class="grow"><div class="t">' + esc(t) + "</div>" + (s ? '<div class="s">' + esc(s) + "</div>" : "") + "</div>" + (right ? '<div class="right">' + right + "</div>" : "") + (extra || "") + "</div>"; }
+  function lst(rows) { return '<div class="card flush">' + rows.join("") + "</div>"; }
+  function pill(t, c) { return '<span class="pill ' + (c || "") + '">' + esc(t) + "</span>"; }
+  function cvar(id) { return "var(" + C(id).color + ")"; }
+  function note(t, c) { return '<div class="note ' + (c || "") + '">' + t + "</div>"; }
+  function btn(label, act, attrs, cls) { return '<button class="btn ' + (cls || "") + '" data-act="' + act + '" ' + (attrs || "") + ">" + label + "</button>"; }
+  function toggle(on, act, attrs, label) { return '<button class="toggle" role="switch" aria-checked="' + (on ? "true" : "false") + '" aria-label="' + esc(label) + '" data-act="' + act + '" ' + attrs + "></button>"; }
+
+  function classCard(c, withDate) {
+    var co = C(c.c);
+    return '<button class="item-btn cls' + (c.status === "annule" ? " off" : "") + '" data-act="class" data-c="' + c.c + '" data-date="' + c.date + '" data-s="' + c.s + '"><span class="cbar" style="background:var(' + co.color + ')"></span><span style="min-width:0"><span class="t">' + esc(co.name) + "</span><br><span class='s'>" + hm(c.s) + " à " + hm(c.e) + " · " + esc(c.room) + "</span>" +
+      (c.status === "annule" ? '<br>' + pill("Annulé", "bad") : c.status === "deplace" ? "<br>" + pill("Local modifié", "warn") : "") + "</span></button>";
+  }
+  function eventRow(e) {
+    var d = pd(e.d), cls = e.type === "exam" ? "exam" : e.type === "eval" ? "eval" : e.type === "perso" ? "perso" : "";
+    var when = e.t ? hm(e.t) + (e.e ? " à " + hm(e.e) : "") : (e.ed ? "Jusqu’au " + pd(e.ed).getDate() + " " + MC[pd(e.ed).getMonth()] : "Toute la journée");
+    return '<button class="evt" data-act="ev" data-d="' + e.d + '" data-i="' + esc(e.title) + '"><span class="date-chip ' + cls + '"><b>' + d.getDate() + "</b><span>" + MC[d.getMonth()] + '</span></span><span class="grow"><span class="t">' + esc(e.title) + '</span><br><span class="s">' + esc(when + (e.where ? " · " + e.where : "")) + "</span></span>" + ic("chev", "sm chev") + "</button>";
+  }
+  function upcoming(n) {
+    var now = NOW(), k = dkey(now);
+    return allEvents().filter(function (e) { return (e.ed || e.d) >= k; }).sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : (a.t || "") < (b.t || "") ? -1 : 1; }).slice(0, n);
+  }
+
+  /* ============ Pages principales ============ */
+  var PAGES = {};
+
+  PAGES.accueil = function () {
+    var now = NOW(), hr = now.getHours();
+    var greet = hr < 5 ? "Bonne nuit" : hr < 12 ? "Bonjour" : hr < 18 ? "Bon après-midi" : "Bonsoir";
+    var wk = Math.floor((pd(dkey(now)) - pd(SESSION.start)) / 604800000) + 1;
+    var nx = nextClass(now), today = classesOn(now);
+    var nextHTML;
+    if (nx) {
+      var co = C(nx.c.c), mm = mins(nx.c.s) - (now.getHours() * 60 + now.getMinutes()), txt, sub;
+      if (nx.i === 0 && mm <= 0) { txt = "En cours"; sub = "Se termine à " + hm(nx.c.e); }
+      else if (nx.i === 0) { txt = "Dans " + (mm >= 60 ? Math.floor(mm / 60) + " h " + (mm % 60 ? p2(mm % 60) : "") : mm + " min"); sub = "Aujourd’hui à " + hm(nx.c.s); }
+      else { txt = nx.i === 1 ? "Demain" : cap(JOURS[nx.day.getDay()]); sub = nx.i === 1 ? "À " + hm(nx.c.s) : dlong(nx.day) + " à " + hm(nx.c.s); }
+      nextHTML = '<div class="card next"><div class="muted small" style="font-weight:700;letter-spacing:.05em;text-transform:uppercase">Prochain cours</div><div class="when">' + txt + '</div><div class="muted">' + sub + "</div>" + classCard(nx.c) + "</div>";
+    } else nextHTML = '<div class="card"><div class="empty">Aucun cours à venir. La session est terminée.</div></div>';
+    var tl = today.length ? '<div class="card tl">' + today.map(function (c) { return '<div class="row" style="align-items:flex-start"><span class="time">' + hm(c.s) + "</span>" + classCard(c) + "</div>"; }).join("") + "</div>" :
+      '<div class="card"><div class="empty">' + (now.getDay() === 5 ? "Vendredi : aucun cours. Bonne fin de semaine !" : now.getDay() === 0 || now.getDay() === 6 ? "C’est la fin de semaine, aucun cours." : NOCLASS[dkey(now)] || "Aucun cours aujourd’hui.") + "</div></div>";
+    var tiles = COURSES.map(function (c) {
+      var st = cStats(c);
+      return '<button class="tile" data-act="go" data-r="cours" data-p="' + c.id + '"><span class="code" style="color:var(' + c.color + ')">' + c.code + '</span><span class="big">' + Math.round(st.avg) + '<small style="font-size:15px"> %</small></span><span class="meter"><i style="width:' + st.avg + "%;background:var(" + c.color + ')"></i></span><span class="nm">' + esc(c.name) + "</span></button>";
+    }).join("");
+    var unread = MESSAGES.filter(isUnread).slice(0, 3);
+    var msgs = unread.length ? lst(unread.map(msgRow)) : '<div class="card"><div class="empty">Aucun nouveau message.</div></div>';
+    var notices = '<div class="card flush">' + NOTICES.slice(0, 4).map(function (n) { return '<button class="notice" data-act="notice" data-id="' + n.id + '"><span class="t">' + esc(n.t) + " " + pill(n.tag) + '</span><span class="b" hidden>' + esc(n.b) + '</span><span class="b">' + esc(n.b.slice(0, 92)) + "…</span></button>"; }).join("") + "</div>";
+    var quick = [["horaire", "cal", "Horaire"], ["notes", "chart", "Notes"], ["notes:cote", "cap", "Cote R"], ["messages", "mail", "Messages"], ["svc:paiement", "card", "Paiement"], ["svc:biblio", "book", "Bibliothèque"], ["svc:psy", "heart", "Aide"], ["svc:locaux", "door", "Locaux"]].map(function (q) {
+      var a = q[0].split(":");
+      return '<button data-act="quick" data-a="' + a[0] + '" data-b="' + (a[1] || "") + '">' + ic(q[1]) + "<span>" + q[2] + "</span></button>";
+    }).join("");
+    var left = '<div class="stack">' + nextHTML + sec("Mon horaire aujourd’hui", tl, ["horaire", "Voir la semaine"]) + sec("Événements à venir", '<div class="card flush">' + upcoming(5).map(eventRow).join("") + "</div>", ["horaire", "Calendrier", "cal"]) + "</div>";
+    var right = '<div class="stack">' + sec("Mes notes · session en cours", '<div class="tiles">' + tiles + "</div>", ["notes", "Détails"]) +
+      '<button class="rcard" data-act="quick" data-a="notes" data-b="cote"><span class="lab">Ma cote R</span><span class="num">' + fr(COTE_R, 3) + '</span><span class="sub">Calculée après l’hiver 2026 · ' + regStats().n + " cours au registre</span></button>" +
+      sec("Mots de mes profs et du Collège", msgs, ["messages", "Tout voir"]) + sec("Avis du Collège", notices) + "</div>";
+    return '<div class="hero"><div class="eyebrow">' + greet + " · " + dlong(now) + "</div><h2>" + esc(STUDENT.first) + " " + esc(STUDENT.last) + "</h2><p>" + STUDENT.prog + '</p><div class="chips">' + pill(SESSION.name) + pill("Semaine " + Math.max(1, Math.min(wk, 17))) + pill("Finissant(e)") + pill(COLLEGE) + "</div></div>" +
+      '<div class="quick">' + quick + '</div><div class="cols two">' + left + right + '</div><p class="foot">Omnivox est une application de démonstration. Toutes les personnes, notes et dates sont inventées.</p>';
+  };
+
+  function msgRow(m) {
+    var col = m.c === "col" ? "var(--navy)" : cvar(m.c), un = isUnread(m);
+    var ini = m.from.split(" ").map(function (w) { return w.charAt(0); }).slice(0, 2).join("").toUpperCase();
+    var d = pd(m.date.slice(0, 10));
+    return '<button class="msg' + (un ? " unread" : "") + '" data-act="go" data-r="msg" data-p="' + m.id + '"><span class="av" style="background:' + col + '">' + esc(ini) + '</span><span class="grow"><span class="t">' + esc(m.from) + '</span><br><span class="s" style="display:block"><b style="font-weight:' + (un ? 700 : 500) + ';color:var(--ink)">' + esc(m.subj) + '</b></span></span><span class="small muted" style="flex:none;text-align:right">' + d.getDate() + " " + MC[d.getMonth()] + '<br><span class="dot' + (un ? "" : " read") + '" style="display:inline-block"></span></span></button>';
+  }
+
+  /* ---------- Horaire ---------- */
+  PAGES.horaire = function () {
+    var seg = '<div class="seg" role="group" aria-label="Affichage">' + [["sem", "Semaine"], ["cal", "Calendrier"], ["avenir", "À venir"]].map(function (t) { return '<button data-act="htab" data-t="' + t[0] + '" aria-pressed="' + (S.hTab === t[0]) + '">' + t[1] + "</button>"; }).join("") + "</div>";
+    return seg + (S.hTab === "sem" ? weekView() : S.hTab === "cal" ? monthView() : agendaView());
+  };
+  function weekStart(now) { var d = new Date(now.getFullYear(), now.getMonth(), now.getDate()); var wd = d.getDay() === 0 ? 7 : d.getDay(); return addDays(d, 1 - wd + S.weekOff * 7); }
+  function weekView() {
+    var now = NOW(), ws = weekStart(now), tk = dkey(now), days = [];
+    for (var i = 0; i < 5; i++) days.push(addDays(ws, i));
+    var sel = S.dayIdx == null ? (S.weekOff === 0 ? Math.min(Math.max((now.getDay() || 7) - 1, 0), 4) : 0) : S.dayIdx;
+    var hdr = '<div class="row between"><button class="btn alt" data-act="week" data-n="-1" aria-label="Semaine précédente">' + ic("back", "sm") + '</button><div style="text-align:center"><b>Semaine du ' + ws.getDate() + " " + MOIS[ws.getMonth()] + '</b><div class="small muted">' + (S.weekOff === 0 ? "Cette semaine" : S.weekOff > 0 ? "Dans " + S.weekOff + " sem." : "Il y a " + (-S.weekOff) + " sem.") + '</div></div><button class="btn alt" data-act="week" data-n="1" aria-label="Semaine suivante">' + ic("chev", "sm") + "</button></div>";
+    var pills = '<div class="days">' + days.map(function (d, i) {
+      var free = !classesOn(d).length;
+      return '<button data-act="day" data-i="' + i + '" aria-pressed="' + (sel === i) + '" class="' + (dkey(d) === tk ? "today " : "") + (free ? "free" : "") + '"><span>' + JC[d.getDay()] + "</span><b>" + d.getDate() + "</b></button>";
+    }).join("") + "</div>";
+    var dd = days[sel], list = classesOn(dd);
+    var dayHTML = '<div class="card tl"><h3 style="font-size:17px">' + cap(dlong(dd)) + "</h3>" + (list.length ? list.map(function (c) { return '<div class="row" style="align-items:flex-start"><span class="time">' + hm(c.s) + "</span>" + classCard(c) + "</div>"; }).join("") : '<div class="empty" style="padding:14px 0">' + (NOCLASS[dkey(dd)] || (dd.getDay() === 5 ? "Vendredi libre : aucun cours." : "Aucun cours ce jour-là.")) + "</div>") + "</div>";
+    var hours = ["13", "14", "15", "16", "17", "18"], H0 = 12 * 60 + 30, ppm = 60 / 60;
+    var cols = '<div class="hh"></div>' + days.map(function (d) { return '<div class="colh ' + (dkey(d) === tk ? "today" : "") + '">' + JC[d.getDay()] + " " + d.getDate() + "</div>"; }).join("");
+    var body = '<div class="hh" style="position:relative;height:330px">' + hours.map(function (h) { return '<span style="position:absolute;top:' + (((+h) * 60 - H0) * ppm - 6) + 'px;right:6px">' + h + " h</span>"; }).join("") + "</div>" + days.map(function (d) {
+      return '<div class="col">' + classesOn(d).map(function (c) {
+        var top = (mins(c.s) - H0) * ppm, h = (mins(c.e) - mins(c.s)) * ppm - 2, co = C(c.c);
+        return '<button class="blk" data-act="class" data-c="' + c.c + '" data-date="' + c.date + '" data-s="' + c.s + '" style="top:' + top + "px;height:" + h + "px;background:var(" + co.color + ");" + (c.status === "annule" ? "opacity:.35;text-decoration:line-through" : "") + '">' + co.code.split("-")[0] + "<small>" + c.room.replace("Laboratoire ", "Lab ") + "</small></button>";
+      }).join("") + "</div>";
+    }).join("");
+    var grid = '<div class="card grid-wrap"><div class="wk">' + cols + body + "</div></div>";
+    var legend = '<div class="row" style="flex-wrap:wrap;gap:10px 16px">' + COURSES.map(function (c) { return '<span class="small row" style="gap:6px"><span class="cbar" style="width:10px;height:10px;border-radius:3px;background:var(' + c.color + ')"></span>' + esc(c.name) + "</span>"; }).join("") + "</div>";
+    return hdr + pills + '<div class="cols two"><div class="stack">' + dayHTML + legend + note("Aucun cours le vendredi. Tes cours ont tous lieu en après-midi, du lundi au jeudi.") + '</div><div class="stack"><h2 style="font-size:19px">Ma semaine en un coup d’œil</h2>' + grid + "</div></div>";
+  }
+  function monthView() {
+    var y = S.mY, m = S.mM, first = new Date(y, m, 1), startOff = (first.getDay() + 6) % 7, nd = new Date(y, m + 1, 0).getDate();
+    var evs = allEvents(), tk = dkey(NOW());
+    var filt = function (e) { return S.mFilter === "all" || e.type === S.mFilter || (S.mFilter === "college" && (e.type === "admin" || e.type === "social")); };
+    var cells = "";
+    ["L", "M", "M", "J", "V", "S", "D"].forEach(function (d) { cells += '<div class="dow">' + d + "</div>"; });
+    for (var i = 0; i < startOff; i++) cells += '<div class="day out" aria-hidden="true"></div>';
+    for (var d = 1; d <= nd; d++) {
+      var dt = new Date(y, m, d), k = dkey(dt), types = {}, cl = classesOn(dt);
+      if (cl.length && (S.mFilter === "all" || S.mFilter === "cours")) types.cours = 1;
+      evs.forEach(function (e) { if (filt(e) && ((e.d === k) || (e.ed && e.d <= k && k <= e.ed))) types[e.type] = 1; });
+      var dots = Object.keys(types).slice(0, 4).map(function (t) { return '<i style="background:' + TCOL[t] + '"></i>'; }).join("");
+      cells += '<button class="day' + (k === tk ? " today" : "") + '" data-act="selday" data-d="' + k + '" aria-pressed="' + (S.selDate === k) + '" aria-label="' + dlong(dt) + '"><span>' + d + '</span><span class="dots">' + dots + "</span></button>";
+    }
+    var chips = [["all", "Tout"], ["cours", "Cours"], ["exam", "Examens"], ["eval", "Remises"], ["college", "Collège"], ["perso", "Personnel"]].map(function (f) { return '<button data-act="mfilter" data-f="' + f[0] + '" aria-pressed="' + (S.mFilter === f[0]) + '">' + f[1] + "</button>"; }).join("");
+    var sel = S.selDate || tk, sd = pd(sel), selEv = evs.filter(function (e) { return e.d === sel || (e.ed && e.d <= sel && sel <= e.ed); });
+    var dayList = classesOn(sd).map(function (c) { return '<div class="listrow">' + classCard(c) + "</div>"; }).join("") + selEv.map(eventRow).join("");
+    var add = btn(ic("plus", "sm") + " Ajouter un événement", "addev", 'data-d="' + sel + '"', "alt");
+    return '<div class="row between"><button class="btn alt" data-act="mon" data-n="-1" aria-label="Mois précédent">' + ic("back", "sm") + "</button><h2 style=\"font-size:20px\">" + cap(MOIS[m]) + " " + y + '</h2><button class="btn alt" data-act="mon" data-n="1" aria-label="Mois suivant">' + ic("chev", "sm") + '</button></div><div class="chipbar">' + chips + '</div><div class="cols two"><div class="month">' + cells + '</div><div class="stack"><h2 style="font-size:19px">' + cap(dlong(sd)) + '</h2><div class="card flush">' + (dayList || '<div class="empty">Rien de prévu ce jour-là.</div>') + "</div>" + add + "</div></div>";
+  }
+  function agendaView() {
+    var evs = upcoming(40), out = "", last = "";
+    evs.forEach(function (e) { if (e.d !== last) { last = e.d; } });
+    var groups = {};
+    evs.forEach(function (e) { (groups[e.d] = groups[e.d] || []).push(e); });
+    Object.keys(groups).forEach(function (k) { out += '<section class="sec"><h2 style="font-size:16px;color:var(--muted)">' + cap(dlong(pd(k))) + '</h2><div class="card flush">' + groups[k].map(eventRow).join("") + "</div></section>"; });
+    return out + '<div class="btns">' + btn(ic("plus", "sm") + " Ajouter un événement", "addev", 'data-d="' + dkey(NOW()) + '"', "alt") + "</div>";
+  }
+
+  /* ---------- Notes ---------- */
+  PAGES.notes = function () {
+    var seg = '<div class="seg" role="group">' + [["session", "Session en cours"], ["cote", "Cote R et registre"]].map(function (t) { return '<button data-act="ntab" data-t="' + t[0] + '" aria-pressed="' + (S.notesTab === t[0]) + '">' + t[1] + "</button>"; }).join("") + "</div>";
+    return seg + (S.notesTab === "session" ? notesSession() : notesCote());
+  };
+  function notesSession() {
+    var avgs = COURSES.map(function (c) { return Math.round(cStats(c).avg); });
+    var mean = avgs.reduce(function (a, b) { return a + b; }, 0) / avgs.length;
+    var cards = COURSES.map(function (c) {
+      var st = cStats(c);
+      return '<button class="card" style="text-align:left;display:grid;gap:10px" data-act="go" data-r="cours" data-p="' + c.id + '"><span class="row between" style="align-items:flex-start"><span style="min-width:0"><span class="small" style="font-weight:700;color:var(' + c.color + ')">' + c.code + " · groupe " + c.group + '</span><br><b style="font-family:var(--f-display);font-size:18px">' + esc(c.name) + '</b><br><span class="small muted">' + esc(c.teacher) + '</span></span><span class="big-out" style="color:var(' + c.color + ')">' + Math.round(st.avg) + ' %</span></span><span class="meter"><i style="width:' + st.avg + "%;background:var(" + c.color + ')"></i></span><span class="small muted">' + st.done + " % de la note déjà évalué · moyenne du groupe " + Math.round(st.grpAvg) + " %</span></button>";
+    }).join("");
+    return '<div class="cols two"><div class="stack">' + '<div class="card" style="background:var(--navy);color:#fff;border:0"><div class="small" style="letter-spacing:.06em;text-transform:uppercase;color:#aac1ec;font-weight:600">Moyenne de la session</div><div class="big-out" style="color:#fff;font-size:52px">' + fr(mean) + ' %</div><p class="small" style="color:#cfdcf6">Notes partielles : l’examen final de chaque cours reste à venir.</p></div>' + note("Résultats provisoires. Les notes finales seront publiées après le 18 décembre.") + '</div><div class="stack">' + cards + "</div></div>";
+  }
+  function spark() {
+    var pts = REG.map(function (s) { return s.rows.reduce(function (a, r) { return a + r[1]; }, 0) / s.rows.length; });
+    var W = 320, H = 110, pad = 26, mn = 82, mx = 94;
+    var xy = pts.map(function (v, i) { return [pad + i * (W - 2 * pad) / (pts.length - 1), H - 24 - (v - mn) / (mx - mn) * (H - 44)]; });
+    var path = xy.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    return '<svg class="spark" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Moyenne par session">' + '<path d="' + path + '" fill="none" stroke="var(--navy)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>' + xy.map(function (p, i) {
+      return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="4.5" fill="var(--navy)"/><text x="' + p[0].toFixed(1) + '" y="' + (p[1] - 10).toFixed(1) + '" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink)">' + fr(pts[i]) + '</text><text x="' + p[0].toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="10" fill="var(--muted)">' + REG[i].s.replace("Automne ", "A ").replace("Hiver ", "H ") + "</text>";
+    }).join("") + "</svg>";
+  }
+  function notesCote() {
+    var rs = regStats(), pos = (COTE_R - 20) / 20 * 100;
+    var gauge = '<div class="gauge" role="img" aria-label="Cote R ' + fr(COTE_R, 3) + ' sur une échelle de 20 à 40"><div class="mark" style="left:' + pos + '%"><span>' + fr(COTE_R, 3) + "</span></div>" + [20, 25, 30, 35, 40].map(function (v) { return '<span class="tick" style="left:' + (v - 20) / 20 * 100 + '%">' + v + "</span>"; }).join("") + "</div>";
+    var hero = '<div class="card"><div class="small muted" style="font-weight:700;letter-spacing:.06em;text-transform:uppercase">Cote de rendement au collégial</div><div class="big-out" style="font-size:56px">' + fr(COTE_R, 3) + "</div>" + gauge + '<p class="small muted">Échelle indicative de démonstration. Dernier calcul : 5 juin 2026, après la session Hiver 2026.</p></div>';
+    var stats = kv([["Cours inscrits au registre", rs.n + " cours réussis"], ["Moyenne générale", fr(rs.avg) + " %"], ["Cote Z moyenne", fr(rs.z, 2)], ["Sessions complétées", REG.length + " sur 5"], ["Cours en cours", COURSES.length + " (Automne 2026)"]]);
+    var sess = REG.map(function (s, i) {
+      var open = S.open["r" + i], avg = s.rows.reduce(function (a, r) { return a + r[1]; }, 0) / s.rows.length;
+      var rows = s.rows.map(function (r) { var z = (r[1] - r[2]) / r[3]; return "<tr><td>" + esc(r[0]) + '<br><span class="muted" style="font-size:11px">' + r[4] + '</span></td><td class="n"><b>' + r[1] + '</b></td><td class="n">' + r[2] + '</td><td class="n">' + fr(z, 2) + "</td></tr>"; }).join("");
+      return '<div class="sess" data-open="' + (open ? 1 : 0) + '"><button data-act="sess" data-i="' + i + '" aria-expanded="' + !!open + '"><span class="grow"><span class="t">' + s.s + '</span><br><span class="small muted">' + s.rows.length + " cours · moyenne " + fr(avg) + ' %</span></span><span class="rot">' + ic("chev", "sm") + "</span></button>" + (open ? '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Cours</th><th class="n">Note</th><th class="n">Moy. groupe</th><th class="n">Z</th></tr></thead><tbody>' + rows + "</tbody></table></div>" : "") + "</div>";
+    }).join("");
+    var cur = '<div class="sess" data-open="1"><button data-act="go" data-r="notes" data-t="session"><span class="grow"><span class="t">Automne 2026 · en cours</span><br><span class="small muted">3 cours · notes provisoires, non incluses dans la cote R</span></span>' + pill("En cours", "warn") + "</button></div>";
+    return '<div class="cols two"><div class="stack">' + hero + '<h2 style="font-size:19px">Mon parcours en un coup d’œil</h2><div class="card">' + spark() + '<p class="small muted">Moyenne par session, en pourcentage.</p></div>' + stats + '</div><div class="stack"><h2 style="font-size:19px">Registre des notes · Sciences de la nature</h2><div class="card flush">' + sess + cur + "</div></div></div>";
+  }
+  PAGES.cours = function () {
+    var c = C(S.param) || COURSES[0], st = cStats(c);
+    var target = S.expanded["t" + c.id] || 90;
+    var need = st.left ? (target - st.earned) / (st.left / 100) : 0;
+    var rows = c.evals.map(function (e) {
+      var d = pd(e.d);
+      return '<div class="evrow"><span class="t">' + esc(e.n) + '</span><span class="g' + (e.g == null ? " pend" : "") + '">' + (e.g == null ? "À venir" : e.g + " %") + '</span><span class="s">' + e.w + " % · " + (e.g == null ? (e.t ? "le " : "au plus tard le ") : "") + d.getDate() + " " + MC[d.getMonth()] + (e.where ? " · " + e.where : "") + '</span><span class="s" style="text-align:right">' + (e.avg != null ? "Moy. groupe " + e.avg + " %" : "") + "</span></div>";
+    }).join("");
+    var sim = S.expanded["s" + c.id] == null ? Math.round(st.avg) : S.expanded["s" + c.id];
+    var simFinal = st.earned + st.left * sim / 100 / 1;
+    simFinal = st.earned + (st.left / 100) * sim;
+    var plan = c.plan.map(function (p) { return '<div class="listrow"><span class="grow t">' + esc(p) + "</span></div>"; }).join("");
+    return '<div class="cour-head" style="background:var(' + c.color + ')"><div class="small" style="font-weight:700;letter-spacing:.06em">' + c.code + " · GROUPE " + c.group + "</div><h2 style=\"font-size:26px\">" + esc(c.name) + '</h2><p>' + esc(c.sub) + '</p><div class="big">' + fr(st.avg) + ' %</div><p>Moyenne pondérée sur ' + st.done + ' % évalué · groupe : ' + fr(st.grpAvg) + " %</p></div>" +
+      '<div class="cols two"><div class="stack">' + sec("Évaluations", '<div class="card flush">' + rows + "</div>") +
+      sec("Calculateur de note finale", '<div class="card" style="display:grid;gap:14px"><div class="field"><label for="tg">Je vise une note finale de</label><select class="in" id="tg" data-act="target" data-c="' + c.id + '">' + [80, 85, 90, 95].map(function (v) { return '<option value="' + v + '"' + (v === target ? " selected" : "") + ">" + v + " %</option>"; }).join("") + '</select></div><div><div class="small muted">Moyenne requise sur les ' + st.left + ' % restants</div><div class="big-out">' + (need > 100 ? "Hors d’atteinte" : need <= 0 ? "Déjà atteint" : fr(need) + " %") + '</div></div><hr style="border:0;border-top:1px solid var(--line);width:100%"><div class="field"><label for="sl">Et si j’obtiens en moyenne <b>' + sim + ' %</b> au reste du cours ?</label><input class="slider" id="sl" type="range" min="50" max="100" step="1" value="' + sim + '" data-act="sim" data-c="' + c.id + '"></div><div><div class="small muted">Note finale estimée</div><div class="big-out" id="simout">' + fr(simFinal) + ' %</div></div></div>') + "</div>" +
+      '<div class="stack">' + sec("Enseignant(e)", '<div class="card"><div class="row"><span class="msg"><span class="av" style="background:var(' + c.color + ');width:46px;height:46px;pointer-events:none">' + c.teacher.split(" ").map(function (w) { return w.charAt(0); }).slice(0, 2).join("") + '</span></span><div style="min-width:0"><b>' + esc(c.teacher) + '</b><div class="small muted">' + esc(c.email) + '</div></div></div><p class="small muted" style="margin:10px 0">Disponibilités : ' + esc(c.office) + '</p><div class="btns">' + btn(ic("mail", "sm") + " Écrire un message", "compose", 'data-to="' + c.id + '"') + btn("Demander une révision", "go", 'data-r="svc" data-p="revision"', "alt") + "</div></div>") +
+      sec("Plan de cours", '<div class="card flush">' + plan + "</div>") + kv([["Pondération (théorie-labo-travail)", c.units], ["Local principal", SCHED.filter(function (s) { return s.c === c.id; })[0].room], ["Évalué à ce jour", st.done + " %"], ["Points déjà acquis", fr(st.earned) + " / " + st.done]]) + "</div></div>";
+  };
+
+  /* ---------- Messages ---------- */
+  var msgQuery = "";
+  PAGES.messages = function () {
+    var f = [["all", "Tous"], ["unread", "Non lus"], ["profs", "Enseignants"], ["col", "Collège"], ["sent", "Envoyés"]];
+    return '<div class="row between"><div class="search" style="flex:1"><label class="sr" style="position:absolute;left:-9999px" for="mq">Rechercher</label>' + ic("search") + '<input class="in" id="mq" type="search" placeholder="Rechercher dans les messages" value="' + esc(msgQuery) + '" autocomplete="off"></div>' + btn(ic("pen", "sm") + " Écrire", "compose", 'data-to=""') + '</div><div class="chipbar">' + f.map(function (x) { return '<button data-act="mf" data-f="' + x[0] + '" aria-pressed="' + (S.msgFilter === x[0]) + '">' + x[1] + (x[0] === "unread" && unreadCount() ? " (" + unreadCount() + ")" : "") + "</button>"; }).join("") + '</div><div id="msglist">' + msgList() + "</div>";
+  };
+  function msgList() {
+    var q = msgQuery.toLowerCase();
+    if (S.msgFilter === "sent") {
+      return S.sent.length ? lst(S.sent.slice().reverse().map(function (m) { return '<div class="listrow"><div class="grow"><div class="t">' + esc(m.subj) + '</div><div class="s">À ' + esc(m.to) + " · " + esc(m.date) + '</div><div class="s" style="margin-top:4px;color:var(--ink)">' + esc(m.body.slice(0, 120)) + "</div></div></div>"; })) : '<div class="card"><div class="empty">Tu n’as pas encore envoyé de message.</div></div>';
+    }
+    var list = MESSAGES.filter(function (m) {
+      if (S.msgFilter === "unread" && !isUnread(m)) return false;
+      if (S.msgFilter === "profs" && m.c === "col") return false;
+      if (S.msgFilter === "col" && m.c !== "col") return false;
+      return !q || (m.from + " " + m.subj + " " + m.body).toLowerCase().indexOf(q) > -1;
+    });
+    return list.length ? lst(list.map(msgRow)) : '<div class="card"><div class="empty">Aucun message ne correspond.</div></div>';
+  }
+  PAGES.msg = function () {
+    var m = MESSAGES.filter(function (x) { return x.id === S.param; })[0];
+    if (!m) return '<div class="card empty">Message introuvable.</div>';
+    S.read[m.id] = true; save();
+    var col = m.c === "col" ? "var(--navy)" : cvar(m.c);
+    return '<div class="card" style="display:grid;gap:14px"><div><h2 style="font-size:21px">' + esc(m.subj) + '</h2></div><div class="row"><span class="msg" style="padding:0;border:0"><span class="av" style="background:' + col + ';pointer-events:none">' + m.from.split(" ").map(function (w) { return w.charAt(0); }).slice(0, 2).join("") + '</span></span><div style="min-width:0"><b>' + esc(m.from) + '</b><div class="small muted">' + esc(m.role) + " · " + pd(m.date.slice(0, 10)).getDate() + " " + MOIS[pd(m.date.slice(0, 10)).getMonth()] + " à " + hm(m.date.slice(11)) + '</div></div></div><div class="mbody">' + esc(m.body) + '</div><div class="btns">' + btn(ic("mail", "sm") + " Répondre", "reply", 'data-id="' + m.id + '"') + btn("Marquer comme non lu", "unread", 'data-id="' + m.id + '"', "alt") + "</div></div>";
+  };
+
+  /* ---------- Services ---------- */
+  var SG = [
+    ["Au quotidien", [["horaire", "cal", "Horaire de cours", "Semaine, calendrier et à venir", "route"], ["examens", "pen", "Horaire d’examens", "Dates, heures et locaux"], ["annules", "alert", "Cours annulés", "1 annulation à venir"], ["deplaces", "swap", "Déplacement de cours", "Changements de local"], ["locaux", "door", "Locaux · disponibilités", "Trouver une salle libre"]]],
+    ["Pour étudier", [["espace", "book", "Espace de cours", "Avis et documents des enseignants"], ["fichiers", "file", "Mes fichiers", "Documents personnels"], ["biblio", "book", "Bibliothèque", "Prêts et renouvellements"], ["ti", "phone", "Aide informatique", "Réseau, courriel, logiciels"], ["tutos", "star", "Didacticiels", "Utiliser les outils du Collège"], ["annuaire", "users", "Annuaire", "Personnel et enseignants"]]],
+    ["Mes notes et mes recours", [["notes", "chart", "Notes et bulletin", "Session en cours", "route"], ["cote", "cap", "Cote R et registre", "Tout mon parcours", "route"], ["revision", "pen", "Demande de révision de note", "Contester un résultat"], ["plainte", "alert", "Plainte étudiante", "Formulaire pédagogique"], ["webfolio", "star", "Mon Webfolio", "Portfolio de compétences"]]],
+    ["Mon parcours", [["grille", "map", "Grille de cheminement", "Progression vers le DEC"], ["diplome", "cap", "Demande de diplôme", "Sanction du DEC"], ["choix", "check", "Choix de cours", "Prochaine session"], ["abandon", "x", "Désinscriptions et abandons", "Règles et dates"], ["attestation", "file", "Attestation de fréquentation", "Document officiel"], ["orientation", "brain", "Orientation et carrière", "Rendez-vous et ressources"]]],
+    ["Papiers et argent", [["paiement", "card", "Centre de paiement", "Frais et solde"], ["releves", "file", "Relevés fiscaux", "Reçus pour impôts"], ["dossier", "user", "Dossier personnel", "Coordonnées et programme"], ["formulaires", "file", "Formulaires en ligne", "Demandes administratives"]]],
+    ["Vie de campus", [["activites", "heart", "Activités", "S’inscrire aux activités"], ["sondages", "vote", "Sondages et votes", "1 sondage ouvert"], ["annonces", "tag", "Petites annonces", "Entre étudiants"], ["livres", "book", "Livres usagés", "Manuels à prix réduit"], ["stationnement", "car", "Permis de stationnement", "Demande et renouvellement"]]],
+    ["Prendre soin de moi", [["urgence", "alert", "Mesures d’urgence", "Plans et consignes", "urg"], ["psy", "heart", "Aide psychosociale", "Outils et rendez-vous"], ["violences", "shield", "Violences à caractère sexuel", "Soutien et ressources"], ["commotion", "brain", "Info commotion cérébrale", "Reconnaître et réagir"]]],
+    ["Mon compte", [["compte", "user", "Profil personnel", "Mot de passe et sécurité", "route"], ["notifs", "bell", "Notifications", "Choisir quoi recevoir"], ["securite", "key", "Validation en 2 étapes", "Appareils de confiance"], ["demo", "clock", "Réglages de la démo", "Horloge et données"]]]
+  ];
+  var SQ = "";
+  function svcGrid() {
+    var q = SQ.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""), out = "";
+    SG.forEach(function (g) {
+      var items = g[1].filter(function (i) { return !q || (i[2] + " " + i[3]).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").indexOf(q) > -1; });
+      if (!items.length) return;
+      out += '<section class="sgroup"><h3>' + g[0] + '</h3><div class="sgrid">' + items.map(function (i) {
+        var route = i[4] === "route";
+        return '<button class="sbtn' + (i[4] === "urg" ? " urg" : "") + '" data-act="' + (route ? "quick" : "go") + '" ' + (route ? 'data-a="' + (i[0] === "cote" ? "notes" : i[0]) + '" data-b="' + (i[0] === "cote" ? "cote" : "") + '"' : 'data-r="svc" data-p="' + i[0] + '"') + '><span class="ico">' + ic(i[1]) + '</span><span style="min-width:0"><span class="t">' + esc(i[2]) + '</span><br><span class="s">' + esc(i[3]) + "</span></span></button>";
+      }).join("") + "</div></section>";
+    });
+    return out || '<div class="card empty">Aucun service ne correspond à cette recherche.</div>';
+  }
+  PAGES.services = function () {
+    return '<div class="search"><label style="position:absolute;left:-9999px" for="sq">Chercher un service</label>' + ic("search") + '<input class="in" id="sq" type="search" placeholder="Chercher : horaire, bourse, rendez-vous…" value="' + esc(SQ) + '" autocomplete="off"></div><div id="sgrid" style="display:grid;gap:22px">' + svcGrid() + "</div>";
+  };
+  function SVCTITLE(id) { var t = id === "mdp" ? "Mot de passe" : ""; SG.forEach(function (g) { g[1].forEach(function (i) { if (i[0] === id) t = i[2]; }); }); return t; }
+
+  /* ---------- Pages de service ---------- */
+  var SV = {};
+  PAGES.svc = function () { var f = SV[S.param]; return f ? f() : note("Cette section n’est pas disponible dans la démo."); };
+
+  SV.examens = function () {
+    var rows = []; COURSES.forEach(function (c) { c.evals.forEach(function (e) { if (e.exam) rows.push([c, e]); }); });
+    rows.sort(function (a, b) { return a[1].d < b[1].d ? -1 : 1; });
+    return note("Période d’examens finaux : du 7 au 17 décembre. Présente-toi 15 minutes à l’avance avec ta carte étudiante.") + lst(rows.map(function (r) { var d = pd(r[1].d); return '<div class="listrow"><span class="cbar" style="background:var(' + r[0].color + ');height:44px"></span><div class="grow"><div class="t">' + esc(r[0].name) + '</div><div class="s">' + cap(dlong(d)) + " · " + hm(r[1].t) + " à " + hm(addMin(r[1].t, 180)) + '</div><div class="s">' + esc(r[1].where) + "</div></div>" + pill(r[1].w + " %") + "</div>"; })) + sec("Consignes", lst([lr("Matériel permis", "Calculatrice non programmable, crayons, une pièce d’identité."), lr("Retard", "Aucun accès à la salle après 30 minutes de retard."), lr("Besoin d’un aménagement ?", "Écris au service d’aide à la réussite au moins 10 jours avant.")]));
+  };
+  SV.annules = function () {
+    return lst(Object.keys(CANCEL).map(function (k) { var a = k.split("|"), d = pd(a[0]); return '<div class="listrow"><div class="grow"><div class="t">' + esc(C(a[1]).name) + " · " + cap(dlong(d)) + '</div><div class="s">' + esc(CANCEL[k]) + "</div></div>" + pill("Annulé", "bad") + "</div>"; })) + note("Aucun autre cours annulé n’est annoncé pour les deux prochaines semaines.");
+  };
+  SV.deplaces = function () {
+    return lst(Object.keys(MOVED).map(function (k) { var a = k.split("|"), d = pd(a[0]); return '<div class="listrow"><div class="grow"><div class="t">' + esc(C(a[1]).name) + " · " + cap(dlong(d)) + '</div><div class="s">Nouveau local : ' + esc(MOVED[k]) + " (au lieu de B-216)</div></div>" + pill("Local modifié", "warn") + "</div>"; })) + note("Les changements de local s’affichent aussi directement dans ton horaire.");
+  };
+  var ROOMS = [["B-110", 36], ["B-115", 24], ["B-212", 40], ["B-310", 28], ["C-014", 60], ["C-116", 20], ["Salle d’étude 1", 6], ["Salle d’étude 2", 6], ["Salle d’étude 3", 8], ["Laboratoire info 1", 30]];
+  SV.locaux = function () {
+    var d = S.acts.roomDay || dkey(NOW()), t = S.acts.roomT || "13:00";
+    var free = ROOMS.filter(function (r, i) { return ((i * 7 + pd(d).getDate() + mins(t) / 30) % 4) !== 0; });
+    var slots = ["08:00", "10:00", "12:00", "13:00", "15:00", "17:00", "19:00"];
+    return '<div class="card" style="display:grid;gap:12px"><div class="field"><label for="rd">Date</label><input class="in" type="date" id="rd" value="' + d + '" data-act="roomday"></div><div class="field"><label>Heure de début (durée : 2 h)</label><div class="chipbar" style="flex-wrap:wrap">' + slots.map(function (s) { return '<button data-act="roomt" data-t="' + s + '" aria-pressed="' + (t === s) + '">' + hm(s) + "</button>"; }).join("") + "</div></div></div>" + sec(free.length + " locaux libres", lst(free.map(function (r) { var res = S.acts["res|" + r[0] + d + t]; return '<div class="listrow"><div class="grow"><div class="t">' + esc(r[0]) + '</div><div class="s">' + r[1] + " places</div></div>" + (res ? pill("Réservé", "ok") : btn("Réserver", "reserve", 'data-k="res|' + r[0] + d + t + '"', "alt")) + "</div>"; }))) + note("Les disponibilités affichées sont fictives et se recalculent selon la date et l’heure choisies.");
+  };
+  SV.espace = function () {
+    return COURSES.map(function (c) { return sec(c.name, lst([lr("Avis de l’enseignant(e)", "Dernier avis : " + (c.id === "ang" ? "Outline due Oct. 23" : c.id === "phy" ? "Corrigé disponible" : "Choix du pathogène avant le 30 octobre")), lr("Plan de cours (PDF)", c.code + " · Automne 2026"), lr("Documents déposés", c.id === "ang" ? "12 fichiers" : c.id === "phy" ? "18 fichiers" : "15 fichiers"), lr("Remise de travaux", "Dépôt en ligne")]), ["cours", "Voir les notes", c.id]); }).join("");
+  };
+  SV.fichiers = function () {
+    var f = [["Relevé de notes · Hiver 2026.pdf", "184 Ko", "5 juin 2026"], ["Lettre de recommandation · brouillon.docx", "42 Ko", "2 oct. 2026"], ["Rapport laboratoire 2 · Physiologie.pdf", "1,2 Mo", "9 oct. 2026"], ["Essai · Midterm.docx", "96 Ko", "13 oct. 2026"], ["Plan de cours · Microbiologie.pdf", "310 Ko", "24 août 2026"], ["CV · version universités.pdf", "128 Ko", "30 sept. 2026"]];
+    return note("Espace de stockage : 62 Mo utilisés sur 500 Mo.") + lst(f.map(function (x) { return lr(x[0], x[1] + " · " + x[2], btn("Ouvrir", "toast", 'data-m="Démo : le fichier ne s’ouvre pas"', "alt")); }));
+  };
+  SV.biblio = function () {
+    var loans = [["bk1", "Physiologie humaine : une approche intégrée", "Silverthorn", "2026-10-19"], ["bk2", "Microbiologie médicale", "Murray, Rosenthal, Pfaller", "2026-10-29"], ["bk3", "Writing Science : How to Write Papers That Get Cited", "Schimel", "2026-11-04"]];
+    var cat = [["Biologie de Campbell", "Reece et al.", "Disponible", "ok"], ["Immunologie : introduction", "Delves", "Emprunté jusqu’au 27 oct.", "warn"], ["Atlas d’anatomie humaine", "Netter", "Disponible", "ok"], ["Guide de rédaction scientifique", "Boisvert", "Disponible", "ok"], ["Éthique en santé", "Hébert", "Réservé", "bad"]];
+    return sec("Mes emprunts", lst(loans.map(function (l) { var due = S.loans[l[0]] || l[3]; return '<div class="listrow"><div class="grow"><div class="t">' + esc(l[1]) + '</div><div class="s">' + esc(l[2]) + " · à remettre le " + pd(due).getDate() + " " + MC[pd(due).getMonth()] + '</div></div>' + (S.loans[l[0]] ? pill("Renouvelé", "ok") : btn("Renouveler", "renew", 'data-k="' + l[0] + '" data-d="' + l[3] + '"', "alt")) + "</div>"; }))) + sec("Rechercher au catalogue", '<div class="search"><label style="position:absolute;left:-9999px" for="cq">Catalogue</label>' + ic("search") + '<input class="in" id="cq" placeholder="Titre, auteur…" data-act="cat"></div><div id="catlist">' + lst(cat.map(function (b) { return lr(b[0], b[1], pill(b[2], b[3])); })) + "</div>") + kv([["Heures d’ouverture", "Lun.–jeu. 8 h à 21 h · Ven. 8 h à 16 h"], ["Salles de travail", "6 salles réservables"], ["Amendes en cours", "0,00 $"]]);
+  };
+  SV.ti = function () {
+    return sec("Questions fréquentes", lst([lr("Je n’arrive pas à me connecter au Wi-Fi", "Choisis le réseau Campus-Étudiants puis ouvre ton navigateur."), lr("Comment imprimer sur le campus ?", "Dépose ton fichier dans l’espace d’impression et libère-le à une borne."), lr("Installer les logiciels du Collège", "Suite bureautique, Python et logiciels de statistiques : gratuits pour les étudiants."), lr("J’ai oublié mon mot de passe", "Va dans Mon compte › Mot de passe.")])) + kv([["Comptoir d’aide", "Local A-100, 8 h à 16 h"], ["Courriel", "aide@cegepoutaouais.qc.ca"], ["Délai de réponse moyen", "4 heures ouvrables"]]);
+  };
+  SV.tutos = function () {
+    return lst([["Déposer un travail dans l’espace de cours", "Vidéo · 3 min"], ["Consulter son horaire sur le téléphone", "Vidéo · 2 min"], ["Utiliser la messagerie du Collège", "Guide · 5 min"], ["Configurer la validation en 2 étapes", "Guide · 4 min"], ["Réserver une salle d’étude", "Vidéo · 2 min"], ["Comprendre sa cote R", "Article · 6 min"]].map(function (t) { return lr(t[0], t[1], btn("Voir", "toast", 'data-m="Démo : le tutoriel n’est pas inclus"', "alt")); }));
+  };
+  var DIR = [["Direction des études", "Poste 2100", "A-210"], ["Registrariat", "Poste 2150", "A-120"], ["Aide financière", "Poste 2175", "A-124"], ["Bibliothèque", "Poste 2300", "B-001"], ["Aide à la réussite", "Poste 2240", "C-020"], ["Orientation", "Poste 2260", "C-024"], ["Infirmerie", "Poste 2290", "A-009"], ["Sécurité", "Poste 2999", "Hall principal"], ["Margaret O’Connell · Anglais", "Poste 2512", "C-112"], ["Étienne Beaulieu-Marchand · Biologie", "Poste 2630", "B-230"], ["Nathalie Desrosiers-Kane · Biologie", "Poste 2644", "B-308"], ["Association étudiante", "Poste 2400", "Local étudiant"]];
+  SV.annuaire = function () {
+    return '<div class="search"><label style="position:absolute;left:-9999px" for="dq">Annuaire</label>' + ic("search") + '<input class="in" id="dq" placeholder="Nom, service ou local" data-act="dir"></div><div id="dirlist">' + lst(DIR.map(function (d) { return lr(d[0], "Local " + d[2], d[1]); })) + "</div>";
+  };
+  SV.revision = function () {
+    var done = S.reviews;
+    return note("Une demande de révision doit être faite dans les 15 jours suivant la publication de la note finale. Tu peux d’abord rencontrer ton enseignant(e).") + '<div class="card" style="display:grid;gap:12px"><div class="field"><label for="rc">Cours</label><select class="in" id="rc">' + COURSES.map(function (c) { return '<option value="' + c.id + '">' + esc(c.name) + "</option>"; }).join("") + '</select></div><div class="field"><label for="rm">Motif de la demande</label><textarea class="in" id="rm" placeholder="Explique ce qui te semble inexact."></textarea></div>' + btn("Envoyer la demande", "review") + "</div>" + (done.length ? sec("Mes demandes", lst(done.map(function (r) { return lr(r.c, r.d, pill("Reçue", "ok")); }))) : "");
+  };
+  SV.plainte = function () {
+    return note("Pour toute plainte de nature pédagogique, une démarche d’abord informelle avec l’enseignant(e) est recommandée. Le formulaire s’adresse ensuite à la direction des études.") + lst([lr("Étape 1", "Discuter avec l’enseignant(e)"), lr("Étape 2", "Contacter ton aide pédagogique individuelle (API)"), lr("Étape 3", "Déposer le formulaire de plainte"), lr("Délai de traitement", "Réponse écrite sous 10 jours ouvrables")]) + btn("Ouvrir le formulaire", "toast", 'data-m="Démo : formulaire non disponible"');
+  };
+  SV.webfolio = function () {
+    var items = [["Présentation orale · Antibiotic resistance", "Anglais · Compétence : communiquer", "1 oct. 2026"], ["Rapport de culture bactérienne", "Microbiologie · Compétence : analyser", "7 oct. 2026"], ["Laboratoire de mesures cardiaques", "Physiologie · Compétence : expérimenter", "14 sept. 2026"], ["Projet de statistiques appliquées", "Hiver 2026 · Compétence : modéliser", "12 avr. 2026"]];
+    return note("Ton Webfolio rassemble les travaux qui montrent tes compétences. Il peut accompagner une demande d’admission.") + lst(items.map(function (i) { return lr(i[0], i[1] + " · " + i[2]); })) + btn(ic("plus", "sm") + " Ajouter une réalisation", "toast", 'data-m="Démo : ajout non disponible"', "alt");
+  };
+  SV.grille = function () {
+    var cats = [["Formation générale · Français", 4, 4], ["Formation générale · Philosophie", 2, 2], ["Formation générale · Anglais", 3, 4, 1], ["Formation générale · Éducation physique", 3, 3], ["Cours complémentaires", 2, 2], ["Formation spécifique · Sciences de la nature", 10, 13, 2]];
+    var done = cats.reduce(function (a, c) { return a + c[1]; }, 0), tot = cats.reduce(function (a, c) { return a + c[2]; }, 0);
+    return '<div class="card"><div class="small muted" style="font-weight:700;letter-spacing:.05em;text-transform:uppercase">Progression</div><div class="big-out">' + done + " / " + tot + ' cours réussis</div><div class="meter" style="margin:10px 0 6px"><i style="width:' + done / tot * 100 + '%;background:var(--navy)"></i></div><p class="small muted">Les 3 cours de l’automne 2026 sont en cours. Réussis, ils complètent ton programme.</p></div>' + lst(cats.map(function (c) { var rest = c[2] - c[1]; return '<div class="listrow"><div class="grow"><div class="t">' + c[0] + '</div><div class="s">' + c[1] + " réussis" + (c[3] ? " · " + c[3] + " en cours" : "") + '</div></div>' + (rest === 0 ? pill("Complété", "ok") : pill(rest + " restant" + (rest > 1 ? "s" : ""), "warn")) + "</div>"; })) + kv([["Épreuve uniforme de français", "Réussie (mai 2025)"], ["Unités accumulées", "81 sur 91,66"], ["Fin prévue", "Décembre 2026"]]);
+  };
+  SV.diplome = function () {
+    var conds = [["Épreuve uniforme de français réussie", 1], ["Cours des sessions antérieures réussis", 1], ["Cours en cours (3) à réussir cette session", 0], ["Dossier personnel à jour", 1], ["Frais acquittés (solde à 0 $)", 1]];
+    var all = !S.diploma;
+    return note("Date limite pour soumettre la demande : 13 novembre 2026.", "warn") + lst(conds.map(function (c) { return '<div class="listrow"><span style="color:' + (c[1] ? "var(--ok)" : "var(--warn-ink)") + '">' + ic(c[1] ? "check" : "clock") + '</span><div class="grow t">' + c[0] + "</div></div>"; })) + (S.diploma ? note("Demande reçue le " + (S.acts.diplomaDate || "") + ". La sanction sera confirmée après la publication des résultats finaux.") : btn("Soumettre ma demande de sanction", "diploma"));
+  };
+  SV.choix = function () {
+    return note("La période de choix de cours est fermée pour toi : tu termines ton programme à la fin de la session Automne 2026.") + kv([["Prochaine période d’inscription", "Hiver 2027 · 9 au 20 novembre"], ["Ton statut", "Finissant(e)"], ["Cours à choisir", "Aucun"]]);
+  };
+  SV.abandon = function () { return lst([lr("Date limite d’abandon sans mention d’échec", "Passée (7 octobre 2026)"), lr("Après cette date", "Une demande motivée est nécessaire, avec rencontre de l’aide pédagogique."), lr("Conséquence sur la cote R", "Un échec est inclus dans le calcul."), lr("Aide pédagogique individuelle", "Local C-018 · sur rendez-vous")]); };
+  SV.attestation = function () {
+    return lst([lr("Attestation de fréquentation scolaire", "Session Automne 2026 · temps plein", btn("Générer", "toast", 'data-m="Démo : aucun document réel n’est produit"', "alt")), lr("Attestation pour l’aide financière aux études", "Valide 30 jours", btn("Générer", "toast", 'data-m="Démo : aucun document réel n’est produit"', "alt")), lr("Relevé de notes officiel", "Frais : 5 $", btn("Demander", "toast", 'data-m="Démo : aucun document réel n’est produit"', "alt"))]) + note("Dans cette démo, aucun document officiel n’est produit.", "warn");
+  };
+  SV.orientation = function () {
+    var slots = ["Mar. 20 oct. · 10 h 30", "Mer. 21 oct. · 14 h", "Jeu. 22 oct. · 9 h", "Lun. 26 oct. · 15 h"];
+    return sec("Ressources", lst([lr("Questions-réponses", "Admission universitaire, cote R, bourses et programmes contingentés"), lr("Calendrier d’admission", "Dépôt des demandes : début octobre à début mars selon les établissements"), lr("Simulateur d’admission", "Compare ta cote R avec les seuils des programmes"), lr("Webfolio", "Prépare ton portfolio de compétences")])) + sec("Prendre rendez-vous", lst(slots.map(function (s) { var k = "or|" + s; return '<div class="listrow"><div class="grow t">' + s + "</div>" + (S.acts[k] ? pill("Confirmé", "ok") : btn("Réserver", "reserve", 'data-k="' + k + '"', "alt")) + "</div>"; })));
+  };
+  var FEES = [["Droits d’admission", 30], ["Frais d’inscription", 45], ["Droits d’afférents · Automne 2026", 148.5], ["Droits d’inscription · Automne 2026", 0], ["Cotisation de l’association étudiante", 18], ["Frais d’impression et photocopies", 12.35]];
+  SV.paiement = function () {
+    var total = FEES.reduce(function (a, f) { return a + f[1]; }, 0), paid = S.payments.paid ? total : total - 12.35 - 18;
+    var due = total - paid;
+    return '<div class="card"><div class="small muted" style="font-weight:700;letter-spacing:.05em;text-transform:uppercase">Solde à payer</div><div class="big-out">' + fr(due, 2) + ' $</div><p class="small muted" style="margin:6px 0 12px">' + (due ? "Échéance : 30 octobre 2026" : "Aucun montant dû. Merci !") + "</p>" + (due ? btn("Payer maintenant (simulation)", "pay") : "") + "</div>" + sec("Détail des frais", lst(FEES.map(function (f, i) { var ok = S.payments.paid || i < 4; return '<div class="listrow"><div class="grow t">' + f[0] + '</div><div class="right"><b>' + fr(f[1], 2) + " $</b><br>" + pill(ok ? "Payé" : "À payer", ok ? "ok" : "warn") + "</div></div>"; }))) + note("Simulation : aucun paiement réel n’est effectué et aucune donnée bancaire n’est demandée.", "warn");
+  };
+  SV.releves = function () {
+    return lst([lr("Relevé 8 · Revenus d’études 2025", "Disponible depuis février 2026", btn("Voir", "toast", 'data-m="Démo : aucun reçu réel n’est produit"', "alt")), lr("Attestation de frais de scolarité 2025", "Montant fictif : 193,50 $", btn("Voir", "toast", 'data-m="Démo : aucun reçu réel n’est produit"', "alt")), lr("Relevé 2026", "Sera disponible en février 2027")]) + note("Les montants sont inventés et n’ont aucune valeur fiscale.", "warn");
+  };
+  SV.dossier = function () {
+    return kv([["Nom", STUDENT.first + " " + STUDENT.last], ["Numéro d’étudiant", STUDENT.id], ["Programme", STUDENT.prog], ["Début du programme", STUDENT.since], ["Statut", "Temps plein · Finissant(e)"], ["Courriel du Collège", STUDENT.email], ["Aide pédagogique", "Sophie Tessier-Leclerc · C-018"]]) + sec("Coordonnées", kv([["Adresse", "123, rue de l’Exemple, Ville-Modèle"], ["Téléphone", "(000) 000-0000"], ["Contact d’urgence", "Parent · (000) 000-0001"]])) + btn("Modifier mes coordonnées", "toast", 'data-m="Démo : modification non disponible"', "alt");
+  };
+  SV.formulaires = function () {
+    return lst([["Demande de bourse de persévérance", "Date limite : 6 nov."], ["Demande d’aménagement pour examens", "En tout temps"], ["Demande de remboursement", "Tarification fictive"], ["Changement d’adresse", "En tout temps"], ["Demande de lettre d’appui", "Délai : 5 jours"], ["Demande d’équivalence", "Pour les cours faits ailleurs"]].map(function (f) { return lr(f[0], f[1], btn("Ouvrir", "toast", 'data-m="Démo : formulaire non disponible"', "alt")); }));
+  };
+  var ACTS = [["Ligue d’improvisation", "Mardi 12 h à 13 h · Local étudiant", "Gratuit"], ["Club de course à pied", "Mercredi 12 h · Départ du gymnase", "Gratuit"], ["Comité environnement", "Jeudi 12 h 15 · C-030", "Gratuit"], ["Tutorat par les pairs · Chimie", "Sur rendez-vous · Aide à la réussite", "Gratuit"], ["Orchestre du collège", "Lundi 18 h · Salle de musique", "20 $"], ["Entraînement de volleyball", "Mardi et jeudi 17 h 30 · Gymnase", "Gratuit"]];
+  SV.activites = function () {
+    return lst(ACTS.map(function (a, i) { var on = S.acts["a" + i]; return '<div class="listrow"><div class="grow"><div class="t">' + a[0] + '</div><div class="s">' + a[1] + " · " + a[2] + "</div></div>" + toggle(on, "actt", 'data-k="a' + i + '"', "Inscription à " + a[0]) + "</div>"; })) + note("Utilise l’interrupteur pour t’inscrire ou te désinscrire.");
+  };
+  var POLLS = [{ id: "p1", q: "Quel jour préférerais-tu pour la cérémonie de remise des diplômes ?", o: [["Vendredi soir", 41], ["Samedi après-midi", 78], ["Dimanche matin", 12]] }, { id: "p2", q: "Quelle amélioration à la cafétéria te serait la plus utile ?", o: [["Plus d’options végétariennes", 63], ["Heures prolongées", 38], ["Micro-ondes supplémentaires", 54]] }];
+  SV.sondages = function () {
+    return POLLS.map(function (p) {
+      var v = S.votes[p.id], tot = p.o.reduce(function (a, o, i) { return a + o[1] + (v === i ? 1 : 0); }, 0);
+      return '<div class="card" style="display:grid;gap:10px"><b>' + esc(p.q) + "</b>" + p.o.map(function (o, i) {
+        var n = o[1] + (v === i ? 1 : 0), pc = Math.round(n / tot * 100);
+        return v == null ? btn(esc(o[0]), "vote", 'data-p="' + p.id + '" data-i="' + i + '"', "alt") : '<div><div class="row between small"><span>' + esc(o[0]) + (v === i ? " ✓" : "") + "</span><b>" + pc + ' %</b></div><div class="meter"><i style="width:' + pc + '%;background:var(--navy)"></i></div></div>';
+      }).join("") + '<div class="small muted">' + (v == null ? "Un seul vote par sondage." : tot + " votes · merci d’avoir participé !") + "</div></div>";
+    }).join("");
+  };
+  var ADS = [["ad1", "Calculatrice scientifique", "15 $", "Peu utilisée, piles neuves. Disponible au local étudiant.", "Il y a 1 j"], ["ad2", "Recherche colocataire · 5 min à pied du campus", "475 $/mois", "Appartement 4 ½ meublé, libre dès décembre.", "Il y a 2 j"], ["ad3", "Sarrau de laboratoire taille M", "10 $", "Lavé, parfait pour les laboratoires de biologie.", "Il y a 3 j"], ["ad4", "Covoiturage Ville-Modèle ↔ campus", "5 $/trajet", "Lundi au jeudi, départ à 12 h.", "Il y a 5 j"]];
+  SV.annonces = function () {
+    return lst(ADS.map(function (a) { return '<div class="listrow"><div class="grow"><div class="t">' + a[1] + '</div><div class="s">' + a[3] + " · " + a[4] + '</div></div><div class="right"><b>' + a[2] + "</b><br>" + (S.ads[a[0]] ? pill("Contacté", "ok") : btn("Contacter", "contact", 'data-k="' + a[0] + '"', "alt")) + "</div></div>"; })) + btn(ic("plus", "sm") + " Publier une annonce", "toast", 'data-m="Démo : publication non disponible"', "alt");
+  };
+  SV.livres = function () {
+    return lst([["Chimie générale · 9e éd.", "35 $", "Bon état"], ["Biologie de Campbell · 12e éd.", "60 $", "Surlignages légers"], ["Anatomie et physiologie · Marieb", "45 $", "Très bon état"], ["Calcul intégral · Stewart", "30 $", "Neuf"], ["Précis de grammaire anglaise", "8 $", "Bon état"]].map(function (b) { return lr(b[0], b[2], "<b>" + b[1] + "</b>"); })) + note("Les prix sont fictifs. Aucune transaction n’est possible dans la démo.");
+  };
+  SV.stationnement = function () {
+    return kv([["Plaque associée", "ABC 123 (exemple)"], ["Permis actuel", S.parking ? "Session Automne 2026 · Zone C" : "Aucun permis"], ["Tarif de la session", "95 $"], ["Travaux", "Stationnement B réduit jusqu’au 30 oct."]]) + (S.parking ? note("Ta demande est enregistrée. Le permis virtuel est actif immédiatement.") : btn("Demander un permis", "parking")) + note("Aucun paiement réel n’est effectué dans cette démo.", "warn");
+  };
+  SV.urgence = function () {
+    return '<div class="note bad"><b>En cas de danger immédiat, compose le 911.</b> Puis avise la sécurité du campus : poste 2999.</div>' + lst([lr("Évacuation (alarme d’incendie)", "Quitte par la sortie la plus proche et rejoins le point de rassemblement du stationnement A."), lr("Confinement barricadé", "Verrouille la porte, éteins les lumières, silence et téléphone en mode silencieux."), lr("Tremblement de terre ou urgence médicale", "Appelle la sécurité. Les défibrillateurs sont situés au hall, à la cafétéria et au gymnase."), lr("Plan des sorties", "Disponible dans chaque local, près de la porte")]) + kv([["Sécurité du campus", "Poste 2999 · 24 h"], ["Infirmerie", "Poste 2290 · A-009"]]);
+  };
+  SV.psy = function () {
+    var slots = ["Mar. 20 oct. · 13 h", "Mer. 21 oct. · 10 h", "Mer. 21 oct. · 15 h", "Jeu. 22 oct. · 11 h", "Lun. 26 oct. · 14 h"];
+    return sec("Outils et conseils", lst([lr("Gérer le stress des examens", "Respiration, sommeil et planification de l’étude"), lr("Ateliers de groupe", "Anxiété de performance · mardis 12 h 15"), lr("Ligne d’écoute du Collège", "Poste 2260 · du lundi au vendredi"), lr("Ressources externes", "Services gratuits et confidentiels, 24 h sur 24")])) + sec("Prendre rendez-vous", lst(slots.map(function (s) { var k = "psy|" + s; return '<div class="listrow"><div class="grow t">' + s + '</div>' + (S.acts[k] ? pill("Confirmé", "ok") : btn("Réserver", "reserve", 'data-k="' + k + '"', "alt")) + "</div>"; }))) + note("Si tu penses à te faire du mal, appelle ou texte le 9-8-8 (Canada), disponible en tout temps.", "bad");
+  };
+  SV.violences = function () {
+    return note("Tu as le droit d’être entendu(e), cru(e) et accompagné(e). Les démarches sont confidentielles.") + lst([lr("Écoute et accompagnement", "Personne-ressource dédiée · poste 2270"), lr("Dépôt d’un signalement ou d’une plainte", "Formulaire confidentiel, traité par la direction"), lr("Mesures de protection", "Aménagements d’horaire, changement de groupe, soutien scolaire"), lr("Politique du Collège", "Politique pour prévenir et combattre les violences à caractère sexuel")]) + kv([["Ligne québécoise (24 h)", "1 888 933-9007"], ["Sécurité du campus", "Poste 2999"]]);
+  };
+  SV.commotion = function () {
+    return sec("Reconnaître les signes", lst([lr("Maux de tête, étourdissements, nausées"), lr("Confusion, difficulté à se concentrer"), lr("Sensibilité à la lumière ou au bruit"), lr("Troubles du sommeil ou de l’humeur")])) + sec("Que faire ?", lst([lr("1. Arrêter l’activité", "Ne reprends jamais le sport le jour même."), lr("2. Consulter un professionnel de la santé", "Infirmerie : poste 2290"), lr("3. Avertir tes enseignants", "Des mesures d’accommodement sont possibles pour les études."), lr("4. Reprise graduelle", "Cognitive d’abord, physique ensuite, selon l’avis médical.")]));
+  };
+  SV.notifs = function () {
+    var items = [["notes", "Nouvelle note publiée"], ["msg", "Nouveau message"], ["cal", "Rappels de remises et d’examens"], ["avis", "Avis généraux du Collège"]];
+    return lst(items.map(function (i) { return '<div class="listrow"><div class="grow t">' + i[1] + "</div>" + toggle(S.notif[i[0]], "notif", 'data-k="' + i[0] + '"', i[1]) + "</div>"; })) + note("Réglages enregistrés dans ce navigateur seulement.");
+  };
+  SV.securite = function () {
+    var names = { 1: ["Téléphone personnel", "Dernière connexion : aujourd’hui"], 2: ["Ordinateur portable", "Dernière connexion : hier"], 3: ["Ordinateur de la bibliothèque", "Dernière connexion : 8 oct."] };
+    return lst([lr("Validation en 2 étapes", S.twofa ? "Activée · code envoyé par application" : "Désactivée", toggle(S.twofa, "twofa", "", "Validation en 2 étapes"))]) + sec("Appareils de confiance", lst(S.devices.length ? S.devices.map(function (id) { return '<div class="listrow"><div class="grow"><div class="t">' + names[id][0] + '</div><div class="s">' + names[id][1] + "</div></div>" + btn("Retirer", "device", 'data-id="' + id + '"', "alt") + "</div>"; }) : [lr("Aucun appareil de confiance.")]));
+  };
+  SV.demo = function () {
+    return '<div class="card" style="display:grid;gap:12px"><div class="row between"><div><b>Horloge de démo</b><div class="small muted">Simule une autre date ou heure pour tester l’horaire.</div></div>' + toggle(S.demoOn, "demoon", "", "Activer l’horloge de démo") + '</div><div class="field"><label for="dd">Date</label><input class="in" id="dd" type="date" value="' + S.demoDate + '" min="2026-08-24" max="2026-12-18" data-act="demodate"></div><div class="field"><label for="dt">Heure</label><input class="in" id="dt" type="time" value="' + S.demoTime + '" data-act="demotime"></div><p class="small muted">Date et heure actuelles dans l’app : <b>' + dlong(NOW()) + " à " + hm(p2(NOW().getHours()) + ":" + p2(NOW().getMinutes())) + "</b></p></div>" + sec("Données", lst([lr("Réinitialiser la démo", "Efface favoris, messages lus, événements ajoutés et réglages.", btn("Réinitialiser", "reset", "", "bad"))])) + note("Omnivox est un projet de démonstration. Les personnes, le collège, les cours, les notes et la cote R sont tous fictifs.");
+  };
+  PAGES.compte = function () {
+    return '<div class="card" style="display:grid;gap:4px;justify-items:center;text-align:center"><span class="msg" style="padding:0;border:0"><span class="av" style="background:var(--navy);width:64px;height:64px;font-size:22px;pointer-events:none">' + esc(STUDENT.first.charAt(0) + STUDENT.last.charAt(0)) + '</span></span><h2 style="font-size:22px;margin-top:6px">' + esc(STUDENT.first + " " + STUDENT.last) + '</h2><div class="muted">' + STUDENT.prog + '</div><div class="small muted">' + STUDENT.id + "</div></div>" + lst([["dossier", "user", "Dossier personnel"], ["securite", "key", "Validation en 2 étapes et appareils"], ["notifs", "bell", "Notifications"], ["mdp", "key", "Changement de mot de passe"], ["demo", "clock", "Réglages de la démo"]].map(function (r) { return '<button class="msg" data-act="go" data-r="svc" data-p="' + r[0] + '"><span class="sbtn" style="padding:0;border:0;background:none"><span class="ico">' + ic(r[1]) + '</span></span><span class="grow t">' + r[2] + "</span>" + ic("chev", "sm chev") + "</button>"; })) + '<p class="foot">Omnivox · version démo 1.0</p>';
+  };
+  SV.mdp = function () {
+    return '<div class="card" style="display:grid;gap:12px"><div class="field"><label for="p0">Mot de passe actuel</label><input class="in" id="p0" type="password" autocomplete="off"></div><div class="field"><label for="p1">Nouveau mot de passe</label><input class="in" id="p1" type="password" autocomplete="off"></div><div class="field"><label for="p2">Confirmer</label><input class="in" id="p2" type="password" autocomplete="off"></div>' + btn("Enregistrer", "pwd") + "</div>" + note("Simulation : aucun mot de passe n’est enregistré ni transmis.", "warn");
+  };
+
+  /* ============ Événements ============ */
+  function showClass(c, date, s) {
+    var co = C(c), k = date + "|" + c + "|" + pd(date).getDay(), cl = classesOn(pd(date)).filter(function (x) { return x.c === c && x.s === s; })[0];
+    if (!cl) return;
+    var ev = co.evals.filter(function (e) { return e.g == null; })[0];
+    openSheet('<h3>' + esc(co.name) + "</h3><div>" + pill(cl.kind) + " " + pill(co.code) + (cl.status === "annule" ? " " + pill("Annulé", "bad") : "") + '</div><div class="card flush kv"><div><span>Quand</span><span>' + cap(dlong(pd(date))) + "<br>" + hm(cl.s) + " à " + hm(cl.e) + "</span></div><div><span>Local</span><span>" + esc(cl.room) + "</span></div><div><span>Enseignant(e)</span><span>" + esc(co.teacher) + "</span></div>" + (ev ? "<div><span>Prochaine évaluation</span><span>" + esc(ev.n) + "<br>" + pd(ev.d).getDate() + " " + MC[pd(ev.d).getMonth()] + "</span></div>" : "") + "</div>" + (cl.note ? note(esc(cl.note), cl.status === "annule" ? "bad" : "warn") : "") + '<div class="btns">' + btn("Voir mes notes", "go", 'data-r="cours" data-p="' + c + '"') + btn("Écrire à l’enseignant(e)", "compose", 'data-to="' + c + '"', "alt") + btn("Fermer", "close", "", "alt") + "</div>");
+  }
+  function showDay(d) { S.selDate = d; S.route = "horaire"; S.hTab = "cal"; var dt = pd(d); S.mY = dt.getFullYear(); S.mM = dt.getMonth(); sheet = null; render(false); window.scrollTo(0, 0); }
+
+  function composeSheet(to, subj) {
+    var opts = COURSES.map(function (c) { return '<option value="' + c.id + '"' + (c.id === to ? " selected" : "") + ">" + esc(c.teacher) + " · " + esc(c.name) + "</option>"; }).join("") + '<option value="reg">Service du registrariat</option><option value="ori">Services d’orientation</option><option value="aid">Aide à la réussite</option>';
+    openSheet('<h3>Nouveau message</h3><div class="field"><label for="cto">Destinataire</label><select class="in" id="cto">' + opts + '</select></div><div class="field"><label for="csj">Objet</label><input class="in" id="csj" value="' + esc(subj || "") + '"></div><div class="field"><label for="cbd">Message</label><textarea class="in" id="cbd"></textarea></div><div class="btns">' + btn("Envoyer", "send") + btn("Annuler", "close", "", "alt") + "</div>");
+  }
+
+  document.addEventListener("click", function (ev) {
+    var el = ev.target.closest("[data-act]");
+    if (!el) return;
+    var a = el.getAttribute("data-act"), D = el.dataset;
+    switch (a) {
+      case "go": if (D.t) S.notesTab = D.t; go(D.r, D.p); break;
+      case "back": go(BACK[S.route] || "accueil"); break;
+      case "quick": if (D.a === "notes") S.notesTab = D.b === "cote" ? "cote" : "session"; if (D.a === "svc") go("svc", D.b); else go(D.a); break;
+      case "htab": S.hTab = D.t; render(true); break;
+      case "ntab": S.notesTab = D.t; render(true); break;
+      case "week": S.weekOff += +D.n; S.dayIdx = 0; render(true); break;
+      case "day": S.dayIdx = +D.i; render(true); break;
+      case "mon": S.mM += +D.n; if (S.mM < 0) { S.mM = 11; S.mY--; } if (S.mM > 11) { S.mM = 0; S.mY++; } render(true); break;
+      case "selday": S.selDate = D.d; render(true); break;
+      case "mfilter": S.mFilter = D.f; render(true); break;
+      case "class": showClass(D.c, D.date, D.s); break;
+      case "ev": {
+        var e = allEvents().filter(function (x) { return x.d === D.d && x.title === D.i; })[0];
+        if (!e) { showDay(D.d); break; }
+        var d = pd(e.d);
+        openSheet("<h3>" + esc(e.title) + "</h3><div>" + pill(TLAB[e.type] || "Événement", e.type === "exam" ? "bad" : e.type === "perso" ? "ok" : "") + '</div><div class="card flush kv"><div><span>Date</span><span>' + cap(dlong(d)) + "</span></div>" + (e.t ? "<div><span>Heure</span><span>" + hm(e.t) + (e.e ? " à " + hm(e.e) : "") + "</span></div>" : "") + (e.where ? "<div><span>Lieu</span><span>" + esc(e.where) + "</span></div>" : "") + "</div><p>" + esc(e.desc || "") + '</p><div class="btns">' + (e.pi != null ? btn("Supprimer", "delev", 'data-i="' + e.pi + '"', "bad") : "") + btn("Voir dans le calendrier", "showday", 'data-d="' + e.d + '"', "alt") + btn("Fermer", "close", "", "alt") + "</div>");
+        break;
+      }
+      case "showday": showDay(D.d); break;
+      case "addev": openSheet('<h3>Ajouter un événement</h3><div class="field"><label for="evt">Titre</label><input class="in" id="evt" placeholder="Ex. : Révision de physiologie"></div><div class="field"><label for="evd">Date</label><input class="in" id="evd" type="date" value="' + D.d + '"></div><div class="field"><label for="evh">Heure (facultatif)</label><input class="in" id="evh" type="time"></div><div class="btns">' + btn("Ajouter", "saveev") + btn("Annuler", "close", "", "alt") + "</div>"); break;
+      case "saveev": {
+        var t = document.getElementById("evt").value.trim(), dd = document.getElementById("evd").value, hh = document.getElementById("evh").value;
+        if (!t || !dd) { toast("Ajoute un titre et une date."); break; }
+        S.perso.push({ d: dd, t: hh, title: t }); save(); sheet = null; S.selDate = dd; render(true); toast("Événement ajouté"); break;
+      }
+      case "delev": S.perso.splice(+D.i, 1); save(); sheet = null; render(true); toast("Événement supprimé"); break;
+      case "notice": { var kids = el.querySelectorAll(".b"); kids[0].hidden = !kids[0].hidden; kids[1].hidden = !kids[1].hidden; break; }
+      case "close": case "scrim": if (a === "scrim" && ev.target !== el) break; closeSheet(); break;
+      case "mf": S.msgFilter = D.f; render(true); break;
+      case "compose": composeSheet(D.to, ""); break;
+      case "reply": { var m = MESSAGES.filter(function (x) { return x.id === D.id; })[0]; var to = m.c === "col" ? "reg" : m.c; composeSheet(to, "Re : " + m.subj); break; }
+      case "unread": S.read[D.id] = false; save(); go("messages"); toast("Marqué comme non lu"); break;
+      case "send": {
+        var tov = document.getElementById("cto"), tx = tov.options[tov.selectedIndex].text, sj = document.getElementById("csj").value.trim(), bd = document.getElementById("cbd").value.trim();
+        if (!sj || !bd) { toast("Ajoute un objet et un message."); break; }
+        var n = NOW(); S.sent.push({ to: tx, subj: sj, body: bd, date: n.getDate() + " " + MC[n.getMonth()] + " à " + hm(p2(n.getHours()) + ":" + p2(n.getMinutes())) }); save(); sheet = null; S.msgFilter = "sent"; go("messages"); toast("Message envoyé (démo)"); break;
+      }
+      case "sess": S.open["r" + D.i] = !S.open["r" + D.i]; render(true); break;
+      case "toast": toast(D.m); break;
+      case "reserve": S.acts[D.k] = true; save(); render(true); toast("Réservation confirmée (démo)"); break;
+      case "renew": S.loans[D.k] = dkey(addDays(pd(D.d), 14)); save(); render(true); toast("Prêt renouvelé de 14 jours"); break;
+      case "roomt": S.acts.roomT = D.t; render(true); break;
+      case "review": { var cs = document.getElementById("rc"), mt = document.getElementById("rm").value.trim(); if (!mt) { toast("Explique le motif de ta demande."); break; } var n2 = NOW(); S.reviews.push({ c: cs.options[cs.selectedIndex].text, d: n2.getDate() + " " + MC[n2.getMonth()] + " 2026" }); save(); render(true); toast("Demande envoyée (démo)"); break; }
+      case "diploma": S.diploma = true; var n3 = NOW(); S.acts.diplomaDate = n3.getDate() + " " + MOIS[n3.getMonth()] + " 2026"; save(); render(true); toast("Demande soumise (démo)"); break;
+      case "pay": S.payments.paid = true; save(); render(true); toast("Paiement simulé : solde à 0 $"); break;
+      case "actt": S.acts[D.k] = !S.acts[D.k]; save(); render(true); toast(S.acts[D.k] ? "Inscription enregistrée" : "Désinscription enregistrée"); break;
+      case "vote": S.votes[D.p] = +D.i; save(); render(true); toast("Vote enregistré"); break;
+      case "contact": S.ads[D.k] = true; save(); render(true); toast("Message envoyé à l’annonceur (démo)"); break;
+      case "parking": S.parking = true; save(); render(true); toast("Demande enregistrée"); break;
+      case "notif": S.notif[D.k] = !S.notif[D.k]; save(); render(true); break;
+      case "twofa": S.twofa = !S.twofa; save(); render(true); toast(S.twofa ? "Validation en 2 étapes activée" : "Validation en 2 étapes désactivée"); break;
+      case "device": S.devices = S.devices.filter(function (i) { return i !== +D.id; }); save(); render(true); toast("Appareil retiré"); break;
+      case "demoon": S.demoOn = !S.demoOn; save(); render(true); break;
+      case "pwd": { var p1 = document.getElementById("p1").value, p2v = document.getElementById("p2").value; if (p1.length < 8) { toast("Minimum 8 caractères."); break; } if (p1 !== p2v) { toast("Les mots de passe ne correspondent pas."); break; } document.getElementById("p0").value = document.getElementById("p1").value = document.getElementById("p2").value = ""; toast("Simulation : mot de passe non enregistré"); break; }
+      case "reset": try { localStorage.removeItem(KEY); } catch (e2) {} S = JSON.parse(JSON.stringify(DEF)); PERSIST.forEach(function () {}); sheet = null; go("accueil"); toast("Démo réinitialisée"); break;
+    }
+  });
+  document.addEventListener("input", function (ev) {
+    var el = ev.target, a = el.getAttribute("data-act");
+    if (el.id === "mq") { msgQuery = el.value; document.getElementById("msglist").innerHTML = msgList(); return; }
+    if (el.id === "sq") { SQ = el.value; document.getElementById("sgrid").innerHTML = svcGrid(); return; }
+    if (a === "sim") { var c = C(el.dataset.c), st = cStats(c); S.expanded["s" + c.id] = +el.value; document.getElementById("simout").textContent = fr(st.earned + (st.left / 100) * +el.value) + " %"; el.previousElementSibling.innerHTML = "Et si j’obtiens en moyenne <b>" + el.value + " %</b> au reste du cours ?"; return; }
+    if (a === "cat") {
+      var q = el.value.toLowerCase(), cat = [["Biologie de Campbell", "Reece et al.", "Disponible", "ok"], ["Immunologie : introduction", "Delves", "Emprunté jusqu’au 27 oct.", "warn"], ["Atlas d’anatomie humaine", "Netter", "Disponible", "ok"], ["Guide de rédaction scientifique", "Boisvert", "Disponible", "ok"], ["Éthique en santé", "Hébert", "Réservé", "bad"]].filter(function (b) { return (b[0] + b[1]).toLowerCase().indexOf(q) > -1; });
+      document.getElementById("catlist").innerHTML = cat.length ? lst(cat.map(function (b) { return lr(b[0], b[1], pill(b[2], b[3])); })) : '<div class="card empty">Aucun résultat.</div>'; return;
+    }
+    if (a === "dir") { var q2 = el.value.toLowerCase(); var r = DIR.filter(function (d) { return d.join(" ").toLowerCase().indexOf(q2) > -1; }); document.getElementById("dirlist").innerHTML = r.length ? lst(r.map(function (d) { return lr(d[0], "Local " + d[2], d[1]); })) : '<div class="card empty">Aucun résultat.</div>'; }
+  });
+  document.addEventListener("change", function (ev) {
+    var el = ev.target, a = el.getAttribute("data-act");
+    if (a === "target") { S.expanded["t" + el.dataset.c] = +el.value; render(true); }
+    else if (a === "roomday") { S.acts.roomDay = el.value; render(true); }
+    else if (a === "demodate") { S.demoDate = el.value || S.demoDate; save(); render(true); }
+    else if (a === "demotime") { S.demoTime = el.value || S.demoTime; save(); render(true); }
+  });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && sheet) closeSheet(); });
+
+  /* Démarrage */
+  try { var h = (location.hash || "").replace("#", ""); if (h) { var i = h.indexOf("-"), r = i > -1 ? h.slice(0, i) : h, p = i > -1 ? h.slice(i + 1) : null; if (PAGES[r]) { S.route = r; S.param = p; } } } catch (e) {}
+  render(false);
+  if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) { window.addEventListener("load", function () { navigator.serviceWorker.register("./sw.js").catch(function () {}); }); }
+})();
+</script>
+
+</body>
+</html>
