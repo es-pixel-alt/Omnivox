@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384" height="384" viewBox="0 0 384 384">
+<title>Icône fleur orange et blanche</title>
+<defs><clipPath id="rounded"><rect width="384" height="384" rx="30" ry="30"/></clipPath></defs>
+<g clip-path="url(#rounded)">
+<rect width="384" height="384" fill="#ff852b"/>
+<path d="M 192 192 L 192.00 -408.00 L 309.05 -396.47 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L 309.05 -396.47 L 421.61 -362.33 Z" fill="#ff852b"/>
+<path d="M 192 192 L 421.61 -362.33 L 525.34 -306.88 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L 525.34 -306.88 L 616.26 -232.26 Z" fill="#ff852b"/>
+<path d="M 192 192 L 616.26 -232.26 L 690.88 -141.34 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L 690.88 -141.34 L 746.33 -37.61 Z" fill="#ff852b"/>
+<path d="M 192 192 L 746.33 -37.61 L 780.47 74.95 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L 780.47 74.95 L 792.00 192.00 Z" fill="#ff852b"/>
+<path d="M 192 192 L 792.00 192.00 L 780.47 309.05 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L 780.47 309.05 L 746.33 421.61 Z" fill="#ff852b"/>
+<path d="M 192 192 L 746.33 421.61 L 690.88 525.34 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L 690.88 525.34 L 616.26 616.26 Z" fill="#ff852b"/>
+<path d="M 192 192 L 616.26 616.26 L 525.34 690.88 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L 525.34 690.88 L 421.61 746.33 Z" fill="#ff852b"/>
+<path d="M 192 192 L 421.61 746.33 L 309.05 780.47 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L 309.05 780.47 L 192.00 792.00 Z" fill="#ff852b"/>
+<path d="M 192 192 L 192.00 792.00 L 74.95 780.47 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L 74.95 780.47 L -37.61 746.33 Z" fill="#ff852b"/>
+<path d="M 192 192 L -37.61 746.33 L -141.34 690.88 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L -141.34 690.88 L -232.26 616.26 Z" fill="#ff852b"/>
+<path d="M 192 192 L -232.26 616.26 L -306.88 525.34 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L -306.88 525.34 L -362.33 421.61 Z" fill="#ff852b"/>
+<path d="M 192 192 L -362.33 421.61 L -396.47 309.05 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L -396.47 309.05 L -408.00 192.00 Z" fill="#ff852b"/>
+<path d="M 192 192 L -408.00 192.00 L -396.47 74.95 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L -396.47 74.95 L -362.33 -37.61 Z" fill="#ff852b"/>
+<path d="M 192 192 L -362.33 -37.61 L -306.88 -141.34 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L -306.88 -141.34 L -232.26 -232.26 Z" fill="#ff852b"/>
+<path d="M 192 192 L -232.26 -232.26 L -141.34 -306.88 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L -141.34 -306.88 L -37.61 -362.33 Z" fill="#ff852b"/>
+<path d="M 192 192 L -37.61 -362.33 L 74.95 -396.47 Z" fill="#ff9a3d"/>
+<path d="M 192 192 L 74.95 -396.47 L 192.00 -408.00 Z" fill="#ff852b"/>
+<rect x="0.5" y="0.5" width="383" height="383" rx="30" ry="30" fill="none" stroke="#f9852c" stroke-width="1"/>
+<circle cx="192" cy="88" r="62" fill="#ffffff"/>
+<circle cx="92" cy="165" r="62" fill="#ffffff"/>
+<circle cx="292" cy="165" r="62" fill="#ffffff"/>
+<circle cx="131" cy="282" r="62" fill="#ffffff"/>
+<circle cx="253" cy="282" r="62" fill="#ffffff"/>
+<circle cx="192" cy="195" r="57.5" fill="#ff7f1e"/>
+</g></svg>
