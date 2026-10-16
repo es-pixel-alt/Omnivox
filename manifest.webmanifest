@@ -1,37 +1,17 @@
 {
-  "name": "Omnivox",
-  "short_name": "Omnivox",
-  "description": "Portail étudiant",
-  "lang": "fr-CA",
-  "start_url": "./",
-  "scope": "./",
+  "name": "Mon Portail",
+  "short_name": "Mon Portail",
+  "description": "Mon application collégiale.",
+  "lang": "fr",
+  "start_url": "/Omnivox/",
+  "scope": "/Omnivox/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f1f5fb",
+  "background_color": "#0d2a5c",
   "theme_color": "#0d2a5c",
   "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "icons/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
-    }
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
