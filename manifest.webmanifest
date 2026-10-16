@@ -1,6 +1,6 @@
 {
-  "name": "Mon Portail",
-  "short_name": "Mon Portail",
+  "name": "Omnivox",
+  "short_name": "Omnivox",
   "description": "Mon application collégiale.",
   "lang": "fr",
   "start_url": "/Omnivox/",
