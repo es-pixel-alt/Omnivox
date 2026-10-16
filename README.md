@@ -19,4 +19,4 @@ L'app s'ouvre alors en plein écran et fonctionne aussi sans connexion après la
 - Les réglages (favoris, messages lus, événements ajoutés) restent dans le navigateur de l'appareil.
 - *Mon compte › Réglages de la démo* permet de simuler une autre date ou heure et de tout réinitialiser.
 - Pour modifier le contenu (cours, notes, horaire, messages), ouvre `index.html` : les données sont au début du script.
-- Après une modification, change `CACHE = 'Onnivox-v1'` dans `sw.js` (par exemple `v2`) pour que les téléphones rechargent la nouvelle version.
+- Après une modification, change `CACHE = 'cap-campus-v1'` dans `sw.js` (par exemple `v2`) pour que les téléphones rechargent la nouvelle version.
