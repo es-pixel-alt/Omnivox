@@ -2,7 +2,7 @@
 // Stratégie « réseau d'abord » : si tu es en ligne, tu vois toujours la dernière
 // version de ton site. Si tu es hors ligne, le téléphone ressort la dernière copie gardée.
 
-const VERSION = "v1";
+const VERSION = "v2";
 const CACHE = "portail-" + VERSION;
 
 // Fichiers gardés dès la première ouverture.
